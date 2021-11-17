@@ -7,3 +7,6 @@ Pac-Man adalah game yang keluar pada tahun 1980 pada mesin arcade di mana kamu b
 - Putu Ravindra Wiguna - 5025201237
 - Ridzki Raihan Alfaza - 5025201178
 ## Referensi
+- https://github.com/janbodnar/Java-Pacman-Game
+- https://github.com/aydinkaancinar/pacman-game-java
+- https://www.youtube.com/watch?v=ATz7bIqOjiA
