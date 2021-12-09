@@ -1,10 +1,13 @@
 package pacman;
 
 import java.awt.*;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.net.URL;
+
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -68,13 +71,18 @@ public class Model extends JPanel implements ActionListener {
 
 
     private void loadImages() {
-        down = new ImageIcon("images/down.gif").getImage();
-        up = new ImageIcon("images/up.gif").getImage();
-        left = new ImageIcon("images/left.gif").getImage();
-        right = new ImageIcon("images/right.gif").getImage();
-        ghost = new ImageIcon("images/ghost.gif").getImage();
-        heart = new ImageIcon("images/heart.png").getImage();
-
+    	URL urlDown = Model.class.getResource("/images/down.gif");
+    	URL urlUp = Model.class.getResource("/images/up.gif");
+    	URL urlLeft = Model.class.getResource("/images/left.gif");
+    	URL urlRight = Model.class.getResource("/images/right.gif");
+    	URL urlGhost = Model.class.getResource("/images/ghost.gif");
+    	URL urlHeart = Model.class.getResource("/images/heart.png");
+        down = new ImageIcon(urlDown).getImage();
+        up = new ImageIcon(urlUp).getImage();
+        left = new ImageIcon(urlLeft).getImage();
+        right = new ImageIcon(urlRight).getImage();
+        ghost = new ImageIcon(urlGhost).getImage();
+        heart = new ImageIcon(urlHeart).getImage();
     }
     private void initVariables() {
 
