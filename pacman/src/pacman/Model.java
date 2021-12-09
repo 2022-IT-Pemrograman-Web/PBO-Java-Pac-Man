@@ -23,12 +23,12 @@ import java.io.FileWriter;
 public class Model extends JPanel implements ActionListener {
 
     private Dimension d;
-    private final Font smallFont = new Font("Arial", Font.BOLD, 14);
-    private Font gamerFont = FontLoader.getFontFromFile("ARCADECLASSIC", 36f);
+    private final Font smallFont = new Font("Arial", Font.BOLD, 28);
+    private Font gamerFont = FontLoader.getFontFromFile("ARCADECLASSIC", 62f);
     //private boolean inGame = false;
     private boolean dying = false;
     private boolean newHighScoreb = false;
-    private final int BLOCK_SIZE = 24;
+    private final int BLOCK_SIZE = 48;
     private final int N_BLOCKS = 15;
     private final int SCREEN_SIZE = N_BLOCKS * BLOCK_SIZE;
     private final int MAX_GHOSTS = 12;
@@ -158,7 +158,7 @@ public class Model extends JPanel implements ActionListener {
     private void initVariables() {
 
         screenData = new short[N_BLOCKS * N_BLOCKS];
-        d = new Dimension(400, 400);
+        d = new Dimension(800, 800);
         dx = new int[4];
         dy = new int[4];
 
@@ -187,7 +187,7 @@ public class Model extends JPanel implements ActionListener {
         String start = "Press SPACE to start";
         Image aboImage,staImage;
         g2d.setColor(Color.yellow);
-        g2d.drawImage(titleImage,SCREEN_SIZE/2 - 133, SCREEN_SIZE/4, 266,48,this);
+        g2d.drawImage(titleImage,SCREEN_SIZE/2 - 266, SCREEN_SIZE/4, 532,96,this);
         if(selectedButton % 2 == 0){
             staImage = startButton[1];
             aboImage = aboutButton[0];
@@ -196,8 +196,8 @@ public class Model extends JPanel implements ActionListener {
             staImage = startButton[0];
             aboImage = aboutButton[1];
         }
-        g2d.drawImage(staImage,SCREEN_SIZE/2 - 65, SCREEN_SIZE/2, 287 ,48,this);
-        g2d.drawImage(aboImage,SCREEN_SIZE/2 - 65, SCREEN_SIZE/2 + 48, 287,48,this);
+        g2d.drawImage(staImage,SCREEN_SIZE/2 - 130, SCREEN_SIZE/2, 574 ,96,this);
+        g2d.drawImage(aboImage,SCREEN_SIZE/2 - 130, SCREEN_SIZE/2 + 96, 574,96,this);
         //g2d.drawString(start, (SCREEN_SIZE)/4, 150);
     }
 
@@ -207,11 +207,11 @@ public class Model extends JPanel implements ActionListener {
         String newHighScore = "Congrats new highscore!";
         g2d.setColor(Color.yellow);
         g2d.setFont(gamerFont);
-        g2d.drawString(gameOverString, (SCREEN_SIZE)/5, 150);
-        g2d.drawString(scoreString, (SCREEN_SIZE)/5, 200);
+        g2d.drawString(gameOverString, (SCREEN_SIZE)/5, 300);
+        g2d.drawString(scoreString, (SCREEN_SIZE)/5, 400);
         if(newHighScoreb){
             System.out.print("JALAN\n");
-            g2d.drawString(newHighScore,(SCREEN_SIZE)/5,250);
+            g2d.drawString(newHighScore,(SCREEN_SIZE)/5,500);
             newHighScoreb = false;
         }
     }
@@ -220,19 +220,19 @@ public class Model extends JPanel implements ActionListener {
         g.setFont(smallFont);
         g.setColor(new Color(5, 181, 79));
         String s = "Score: " + score;
-        g.drawString(s, SCREEN_SIZE / 2 + 96, SCREEN_SIZE + 16);
-        g.drawImage(heart,20,SCREEN_SIZE+1,this);
+        g.drawString(s, SCREEN_SIZE / 2 + 192, SCREEN_SIZE + 32);
+        g.drawImage(heart,40,SCREEN_SIZE+2,this);
         String StrLives = ""+ lives;
-        g.drawString(StrLives, SCREEN_SIZE/2 - 170, SCREEN_SIZE+16);
+        g.drawString(StrLives, SCREEN_SIZE/2 - 340, SCREEN_SIZE+32);
         String strLvl = "lvl "+lvlCounter;
-        g.drawString(strLvl, SCREEN_SIZE/2 - 120, SCREEN_SIZE+16);
+        g.drawString(strLvl, SCREEN_SIZE/2 - 240, SCREEN_SIZE+32);
     }
 
     private void drawHighScore(Graphics2D g) {
         g.setFont(smallFont);
         g.setColor(new Color(5, 181, 79));
         String s = "High Score: " + highScore;
-        g.drawString(s, SCREEN_SIZE / 2 - 60, SCREEN_SIZE + 16);
+        g.drawString(s, SCREEN_SIZE / 2 - 120, SCREEN_SIZE + 32);
     }
     private void checkMaze() {
 
@@ -277,24 +277,23 @@ public class Model extends JPanel implements ActionListener {
 
     private void detectDeath(int id) {
     	//detect if pacman close to ghost with index id
-        if (playerPacMan.x > (ghosts[id].x - 12) && playerPacMan.x < (ghosts[id].x + 12)
-                && playerPacMan.y > (ghosts[id].y - 12) && playerPacMan.y < (ghosts[id].y + 12)
+        if (playerPacMan.x > (ghosts[id].x - 24) && playerPacMan.x < (ghosts[id].x + 24)
+                && playerPacMan.y > (ghosts[id].y - 24) && playerPacMan.y < (ghosts[id].y + 24)
                 && currentState == GameState.inGame) {
-
             dying = true;
         }
     }
     
     private void drawEntity(Graphics2D g2d, int direction, Entity en) {
-    	g2d.drawImage(en.imgs[direction], en.x + 1, en.y + 1, this);
+    	g2d.drawImage(en.imgs[direction], en.x + 2, en.y + 2, this);
     }
 
     private void fixEntityPos(Entity en){
-        if(en.y > 336) {
-            en.y = 336;
+        if(en.y > 672) {
+            en.y = 672;
         }
-        if(en.x > 336){
-            en.x = 336;
+        if(en.x > 672){
+            en.x = 672;
         }
         if(en.x < 0){
             en.x = 0;
@@ -452,33 +451,33 @@ public class Model extends JPanel implements ActionListener {
             for (x = 0; x < SCREEN_SIZE; x += BLOCK_SIZE) {
 
                 g2d.setColor(new Color(0,72,251));
-                g2d.setStroke(new BasicStroke(4));
+                g2d.setStroke(new BasicStroke(8));
 
                 if ((levelData[i] == 0)) {
                     //g2d.fillRect(x, y, BLOCK_SIZE, BLOCK_SIZE);
                 }
 
                 if ((screenData[i] & 1) != 0) {
-                    g2d.drawLine(x, y, x, y + BLOCK_SIZE - 1);
+                    g2d.drawLine(x, y, x, y + BLOCK_SIZE - 2);
                 }
 
                 if ((screenData[i] & 2) != 0) {
-                    g2d.drawLine(x, y, x + BLOCK_SIZE - 1, y);
+                    g2d.drawLine(x, y, x + BLOCK_SIZE - 2, y);
                 }
 
                 if ((screenData[i] & 4) != 0) {
-                    g2d.drawLine(x + BLOCK_SIZE - 1, y, x + BLOCK_SIZE - 1,
-                            y + BLOCK_SIZE - 1);
+                    g2d.drawLine(x + BLOCK_SIZE - 2, y, x + BLOCK_SIZE - 2,
+                            y + BLOCK_SIZE - 2);
                 }
 
                 if ((screenData[i] & 8) != 0) {
-                    g2d.drawLine(x, y + BLOCK_SIZE - 1, x + BLOCK_SIZE - 1,
-                            y + BLOCK_SIZE - 1);
+                    g2d.drawLine(x, y + BLOCK_SIZE - 2, x + BLOCK_SIZE - 2,
+                            y + BLOCK_SIZE - 2);
                 }
 
                 if ((screenData[i] & 16) != 0) {
                     g2d.setColor(new Color(255,255,255));
-                    g2d.fillOval(x + 10, y + 10, 6, 6);
+                    g2d.fillOval(x + 20, y + 20, 12, 12);
                 }
 
                 i++;
