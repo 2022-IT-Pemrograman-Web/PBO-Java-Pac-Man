@@ -6,11 +6,19 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.URL;
 
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.Timer;
+
+import java.io.File;
+import java.nio.file.Paths;
+import java.util.Formatter;
+import java.util.Scanner;
+import java.io.FileWriter;
 
 public class Model extends JPanel implements ActionListener {
 
@@ -18,7 +26,7 @@ public class Model extends JPanel implements ActionListener {
     private final Font smallFont = new Font("Arial", Font.BOLD, 14);
     //private boolean inGame = false;
     private boolean dying = false;
-
+    private boolean newHighScoreb = false;
     private final int BLOCK_SIZE = 24;
     private final int N_BLOCKS = 15;
     private final int SCREEN_SIZE = N_BLOCKS * BLOCK_SIZE;
@@ -27,6 +35,7 @@ public class Model extends JPanel implements ActionListener {
 
     private int N_GHOSTS = 1;
     private int lives, score;
+    private int highScore;
     private int[] dx, dy;
     private URL urlUp, urlDown, urlRight, urlLeft, urlGhostLeft, urlGhostRight, urlGhostUp, urlGhostDown;
     private Image heart;
@@ -73,6 +82,7 @@ public class Model extends JPanel implements ActionListener {
 
     public Model() {
         loadImages();
+        loadHighScore();
         initVariables();
         addKeyListener(new TAdapter());
         setFocusable(true);
@@ -83,6 +93,35 @@ public class Model extends JPanel implements ActionListener {
         return getClass().getResource("/images/" + fileName);
     }
 
+    //untuk membuka file dan menampilkan highscore
+    private static Scanner input;
+    private void loadHighScore(){
+        try {
+            input = new Scanner(Paths.get("highscore.txt"));
+            while (input.hasNextInt())
+                highScore = input.nextInt();
+        }
+        catch (IOException ioException) {
+            System.err.println("Error opening file. Terminating.");
+            System.exit(1);
+        }
+    }
+
+    //untuk mengupdate highscore
+    private void updateHighScore(){
+        try {
+            FileWriter myWriter = new FileWriter("highscore.txt");
+            String otp = Integer.toString(highScore);
+            myWriter.write(otp);
+            myWriter.close();
+          //  System.out.println("Successfully wrote to the file." + highScore);
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+    }
+
+    //untuk menampilkan gambar
     private void loadImages() {
         //load url
         urlDown = loadImage("down.gif");
@@ -160,10 +199,15 @@ public class Model extends JPanel implements ActionListener {
     private void showGameOverScreen(Graphics2D g2d){
         String gameOverString = "Game Over";
         String scoreString = "Your Score: " + score;
+        String newHighScore = "Congrats for your new highscore!";
         g2d.setColor(Color.yellow);
         g2d.setFont(new Font("Monospace", Font.PLAIN, 18));
         g2d.drawString(gameOverString, (SCREEN_SIZE)/4, 150);
         g2d.drawString(scoreString, (SCREEN_SIZE)/4, 200);
+        if(newHighScoreb){
+            newHighScoreb = false;
+            g2d.drawString(newHighScore,(SCREEN_SIZE)/4,200);
+        }
     }
 
     private void drawScore(Graphics2D g) {
@@ -177,6 +221,12 @@ public class Model extends JPanel implements ActionListener {
         }
     }
 
+    private void drawHighScore(Graphics2D g) {
+        g.setFont(smallFont);
+        g.setColor(new Color(5, 181, 79));
+        String s = "High Score: " + highScore;
+        g.drawString(s, SCREEN_SIZE / 2 - 60, SCREEN_SIZE + 16);
+    }
     private void checkMaze() {
 
         int i = 0;
@@ -342,7 +392,12 @@ public class Model extends JPanel implements ActionListener {
                 screenData[pos] = (short) (ch & 15);
                 score++;
             }
+            if(highScore < score){
+                highScore = score;
+                updateHighScore();
+                newHighScoreb = true;
 
+            }
             if (req_dx != 0 || req_dy != 0) {
                 if (!((req_dx == -1 && req_dy == 0 && (ch & 1) != 0)
                         || (req_dx == 1 && req_dy == 0 && (ch & 4) != 0)
@@ -475,7 +530,7 @@ public class Model extends JPanel implements ActionListener {
 
         drawMaze(g2d);
         drawScore(g2d);
-
+        drawHighScore(g2d);
         switch (currentState){
             case inGame:
                 playGame(g2d);
