@@ -25,7 +25,7 @@ public class Model extends JPanel implements ActionListener {
     private final int MAX_GHOSTS = 12;
     private final int PACMAN_SPEED = 6;
 
-    private int N_GHOSTS = 6;
+    private int N_GHOSTS = 1;
     private int lives, score;
     private int[] dx, dy;
     private URL urlUp, urlDown, urlRight, urlLeft, urlGhostLeft, urlGhostRight, urlGhostUp, urlGhostDown;
@@ -184,7 +184,7 @@ public class Model extends JPanel implements ActionListener {
 
         while (i < N_BLOCKS * N_BLOCKS && finished) {
 
-            if ((screenData[i]) != 0) {
+            if (screenData[i] >= 16) {
                 finished = false;
             }
 
@@ -231,7 +231,22 @@ public class Model extends JPanel implements ActionListener {
     private void drawEntity(Graphics2D g2d, int direction, Entity en) {
     	g2d.drawImage(en.imgs[direction], en.x + 1, en.y + 1, this);
     }
-    
+
+    private void fixEntityPos(Entity en){
+        if(en.y > 336) {
+            en.y = 336;
+        }
+        if(en.x > 336){
+            en.x = 336;
+        }
+        if(en.x < 0){
+            en.x = 0;
+        }
+        if(en.y < 0){
+            en.y = 0;
+        }
+    }
+
     private void moveGhosts(Graphics2D g2d) {
 
         int pos;
@@ -291,8 +306,8 @@ public class Model extends JPanel implements ActionListener {
 
             }
             ghosts[i].updateMovement();
+//            fixEntityPos(ghosts[i]);
             drawGhost(g2d, i);
-//            ghosts[i].drawEntity(g2d, i);
             
             //detect death
             detectDeath(i);
@@ -348,6 +363,7 @@ public class Model extends JPanel implements ActionListener {
             }
         }
         playerPacMan.updateMovement();
+        fixEntityPos(playerPacMan);
     }
 
     private void drawPacman(Graphics2D g2d) {
@@ -413,7 +429,6 @@ public class Model extends JPanel implements ActionListener {
         lives = 3;
         score = 0;
         initLevel();
-        N_GHOSTS = 6;
         currentSpeed = 3;
     }
 

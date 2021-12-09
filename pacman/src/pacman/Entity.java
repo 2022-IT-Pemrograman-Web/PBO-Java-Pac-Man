@@ -42,4 +42,12 @@ public class Entity {
 		x = x + dx * speed;
 		y = y + dy * speed;
 	}
+
+	public int getX() {
+		return x;
+	}
+
+	public int getY() {
+		return y;
+	}
 }
