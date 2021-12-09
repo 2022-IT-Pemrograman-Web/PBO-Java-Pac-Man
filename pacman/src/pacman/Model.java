@@ -16,6 +16,7 @@ public class Model extends JPanel implements ActionListener {
 
     private Dimension d;
     private final Font smallFont = new Font("Arial", Font.BOLD, 14);
+    private Font gamerFont = FontLoader.getFontFromFile("ARCADECLASSIC", 36f);
     //private boolean inGame = false;
     private boolean dying = false;
 
@@ -159,11 +160,11 @@ public class Model extends JPanel implements ActionListener {
 
     private void showGameOverScreen(Graphics2D g2d){
         String gameOverString = "Game Over";
-        String scoreString = "Your Score: " + score;
+        String scoreString = "Your Score  " + score;
         g2d.setColor(Color.yellow);
-        g2d.setFont(new Font("Monospace", Font.PLAIN, 18));
-        g2d.drawString(gameOverString, (SCREEN_SIZE)/4, 150);
-        g2d.drawString(scoreString, (SCREEN_SIZE)/4, 200);
+        g2d.setFont(gamerFont);
+        g2d.drawString(gameOverString, (SCREEN_SIZE)/5, 150);
+        g2d.drawString(scoreString, (SCREEN_SIZE)/5, 200);
     }
 
     private void drawScore(Graphics2D g) {
