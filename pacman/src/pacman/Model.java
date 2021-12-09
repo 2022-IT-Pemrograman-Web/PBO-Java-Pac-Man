@@ -209,12 +209,6 @@ public class Model extends JPanel implements ActionListener {
             newHighScoreb = false;
             g2d.drawString(newHighScore,(SCREEN_SIZE)/4,200);
         }
-
-        String scoreString = "Your Score  " + score;
-        g2d.setColor(Color.yellow);
-        g2d.setFont(gamerFont);
-        g2d.drawString(gameOverString, (SCREEN_SIZE)/5, 150);
-        g2d.drawString(scoreString, (SCREEN_SIZE)/5, 200);
     }
 
     private void drawScore(Graphics2D g) {
