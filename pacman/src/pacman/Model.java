@@ -29,8 +29,11 @@ public class Model extends JPanel implements ActionListener {
     private int lives, score;
     private int[] dx, dy;
     private URL urlUp, urlDown, urlRight, urlLeft, urlGhostLeft, urlGhostRight, urlGhostUp, urlGhostDown;
-    private URL urlTitle;
     private Image heart;
+    private Image titleImage;
+    private Image[] startButton;
+    private Image[] aboutButton;
+    private int selectedButton = 0;
     private int req_dx, req_dy;
 	
     private Entity playerPacMan;
@@ -76,19 +79,37 @@ public class Model extends JPanel implements ActionListener {
         initGame();
     }
 
+    private URL loadImage(String fileName){
+        return getClass().getResource("/images/" + fileName);
+    }
 
     private void loadImages() {
-        urlDown = getClass().getResource("/images/down.gif");
-    	urlUp = getClass().getResource("/images/up.gif");
-    	urlLeft = getClass().getResource("/images/left.gif");
-    	urlRight = getClass().getResource("/images/right.gif");
-    	urlGhostLeft = getClass().getResource("/images/ghostLeft.gif");
-    	urlGhostRight = getClass().getResource("/images/ghostRight.gif");
-    	urlGhostUp = getClass().getResource("/images/ghostUp.gif");
-    	urlGhostDown = getClass().getResource("/images/ghostDown.gif");
-        urlTitle = getClass().getResource("/images/title.png");
-    	URL urlHeart = getClass().getResource("/images/heart.png");
+        //load url
+        urlDown = loadImage("down.gif");
+    	urlUp = loadImage("up.gif");
+    	urlLeft = loadImage("left.gif");
+    	urlRight = loadImage("right.gif");
+    	urlGhostLeft = loadImage("ghostLeft.gif");
+    	urlGhostRight = loadImage("ghostRight.gif");
+    	urlGhostUp = loadImage("ghostUp.gif");
+    	urlGhostDown = loadImage("ghostDown.gif");
+        URL urlTitle = loadImage("title.png");
+    	URL urlHeart = loadImage("heart.png");
+        URL urlStart1 = loadImage("Start1.png");
+        URL urlStart2 = loadImage("Start2.png");
+        URL urlAbout1 = loadImage("About1.png");
+        URL urlAbout2 = loadImage("About2.png");
+
+        //get images
+        startButton = new Image[2];
+        aboutButton = new Image[2];
+
         heart = new ImageIcon(urlHeart).getImage();
+        titleImage = new ImageIcon(urlTitle).getImage();
+        startButton[0] = new ImageIcon(urlStart1).getImage();
+        startButton[1] = new ImageIcon(urlStart2).getImage();
+        aboutButton[0] = new ImageIcon(urlAbout1).getImage();
+        aboutButton[1] = new ImageIcon(urlAbout2).getImage();
     }
     private void initVariables() {
 
@@ -120,10 +141,20 @@ public class Model extends JPanel implements ActionListener {
     private void showIntroScreen(Graphics2D g2d) {
 
         String start = "Press SPACE to start";
+        Image aboImage,staImage;
         g2d.setColor(Color.yellow);
-        Image titleImage = new ImageIcon(urlTitle).getImage();
         g2d.drawImage(titleImage,SCREEN_SIZE/4, SCREEN_SIZE/4, this);
-        g2d.drawString(start, (SCREEN_SIZE)/4, 150);
+        if(selectedButton % 2 == 0){
+            staImage = startButton[1];
+            aboImage = aboutButton[0];
+        }
+        else{
+            staImage = startButton[0];
+            aboImage = aboutButton[1];
+        }
+        g2d.drawImage(staImage,SCREEN_SIZE*2/5, SCREEN_SIZE/2, this);
+        g2d.drawImage(aboImage,SCREEN_SIZE*2/5, SCREEN_SIZE/2 + 35, this);
+        //g2d.drawString(start, (SCREEN_SIZE)/4, 150);
     }
 
     private void showGameOverScreen(Graphics2D g2d){
@@ -475,8 +506,16 @@ public class Model extends JPanel implements ActionListener {
                     break;
                 case introScreen:
                     if (key == KeyEvent.VK_SPACE) {
-                        currentState = GameState.inGame;
-                        initGame();
+                        if(selectedButton % 2 == 0) {
+                            currentState = GameState.inGame;
+                            initGame();
+                        }
+                        else{
+                            //about di sini
+                        }
+                    }
+                    if (key == KeyEvent.VK_UP || key == KeyEvent.VK_DOWN) {
+                        selectedButton ++;
                     }
                     break;
                 case gameOver:
