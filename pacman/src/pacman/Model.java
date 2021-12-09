@@ -83,8 +83,8 @@ public class Model extends JPanel implements ActionListener {
     private void loadMap(){
         int i = 0;
         try {
-            if(lvlCounter % 2 == 0) input = new Scanner(Paths.get("C:\\Users\\yates\\IdeaProjects\\PBO-Java-Pac-Man\\pacman\\src\\map\\level02.txt")); //ganti path
-            else input = new Scanner(Paths.get("C:\\Users\\yates\\IdeaProjects\\PBO-Java-Pac-Man\\pacman\\src\\map\\level01.txt")); //ganti path
+            if(lvlCounter % 2 == 0) input = new Scanner(Paths.get("./src/map/level02.txt")); //ganti path
+            else input = new Scanner(Paths.get("./src/map/level01.txt")); //ganti path
             while (input.hasNext()) {
                 String[] data = input.nextLine().split(",");
                 for(int j = 0 ; j < data.length ; j++){
@@ -93,8 +93,9 @@ public class Model extends JPanel implements ActionListener {
                 }
             }
         }
-        catch (IOException ioException) {
-            System.err.println("Error opening file. Terminating.");
+        catch (IOException e) {
+            System.err.println("Error opening Level file. Terminating.");
+            e.printStackTrace();
             System.exit(1);
         }
     }
@@ -102,12 +103,12 @@ public class Model extends JPanel implements ActionListener {
     //untuk membuka file dan menampilkan highscore
     private void loadHighScore(){
         try {
-            input = new Scanner(Paths.get("highscore.txt"));
+            input = new Scanner(Paths.get("../highscore.txt"));
             while (input.hasNextInt())
                 highScore = input.nextInt();
         }
         catch (IOException ioException) {
-            System.err.println("Error opening file. Terminating.");
+            System.err.println("Error opening high score file. Terminating.");
             System.exit(1);
         }
     }
@@ -121,7 +122,7 @@ public class Model extends JPanel implements ActionListener {
             myWriter.close();
           //  System.out.println("Successfully wrote to the file." + highScore);
         } catch (IOException e) {
-            System.out.println("An error occurred.");
+            System.out.println("An error on update high score occurred.");
             e.printStackTrace();
         }
     }
@@ -203,7 +204,7 @@ public class Model extends JPanel implements ActionListener {
 
     private void showGameOverScreen(Graphics2D g2d){
         String gameOverString = "Game Over";
-        String scoreString = "Your Score: " + score;
+        String scoreString = "Your Score " + score;
         String newHighScore = "Congrats new highscore!";
         g2d.setColor(Color.yellow);
         g2d.setFont(gamerFont);
