@@ -29,6 +29,7 @@ public class Model extends JPanel implements ActionListener {
     private int lives, score;
     private int[] dx, dy;
     private URL urlUp, urlDown, urlRight, urlLeft, urlGhostLeft, urlGhostRight, urlGhostUp, urlGhostDown;
+    private URL urlTitle;
     private Image heart;
     private int req_dx, req_dy;
 	
@@ -85,6 +86,7 @@ public class Model extends JPanel implements ActionListener {
     	urlGhostRight = getClass().getResource("/images/ghostRight.gif");
     	urlGhostUp = getClass().getResource("/images/ghostUp.gif");
     	urlGhostDown = getClass().getResource("/images/ghostDown.gif");
+        urlTitle = getClass().getResource("/images/title.png");
     	URL urlHeart = getClass().getResource("/images/heart.png");
         heart = new ImageIcon(urlHeart).getImage();
     }
@@ -119,6 +121,8 @@ public class Model extends JPanel implements ActionListener {
 
         String start = "Press SPACE to start";
         g2d.setColor(Color.yellow);
+        Image titleImage = new ImageIcon(urlTitle).getImage();
+        g2d.drawImage(titleImage,SCREEN_SIZE/4, SCREEN_SIZE/4, this);
         g2d.drawString(start, (SCREEN_SIZE)/4, 150);
     }
 
