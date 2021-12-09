@@ -24,6 +24,7 @@ public class Model extends JPanel implements ActionListener {
 
     private Dimension d;
     private final Font smallFont = new Font("Arial", Font.BOLD, 14);
+    private Font gamerFont = FontLoader.getFontFromFile("ARCADECLASSIC", 36f);
     //private boolean inGame = false;
     private boolean dying = false;
     private boolean newHighScoreb = false;
@@ -208,6 +209,12 @@ public class Model extends JPanel implements ActionListener {
             newHighScoreb = false;
             g2d.drawString(newHighScore,(SCREEN_SIZE)/4,200);
         }
+
+        String scoreString = "Your Score  " + score;
+        g2d.setColor(Color.yellow);
+        g2d.setFont(gamerFont);
+        g2d.drawString(gameOverString, (SCREEN_SIZE)/5, 150);
+        g2d.drawString(scoreString, (SCREEN_SIZE)/5, 200);
     }
 
     private void drawScore(Graphics2D g) {
