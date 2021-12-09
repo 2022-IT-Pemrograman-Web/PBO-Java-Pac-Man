@@ -122,6 +122,15 @@ public class Model extends JPanel implements ActionListener {
         g2d.drawString(start, (SCREEN_SIZE)/4, 150);
     }
 
+    private void showGameOverScreen(Graphics2D g2d){
+        String gameOverString = "Game Over";
+        String scoreString = "Your Score: " + score;
+        g2d.setColor(Color.yellow);
+        g2d.setFont(new Font("Monospace", Font.PLAIN, 18));
+        g2d.drawString(gameOverString, (SCREEN_SIZE)/4, 150);
+        g2d.drawString(scoreString, (SCREEN_SIZE)/4, 200);
+    }
+
     private void drawScore(Graphics2D g) {
         g.setFont(smallFont);
         g.setColor(new Color(5, 181, 79));
@@ -168,7 +177,7 @@ public class Model extends JPanel implements ActionListener {
         lives--;
 
         if (lives == 0) {
-            currentState = GameState.introScreen;
+            currentState = GameState.gameOver;
         }
 
         continueLevel();
@@ -425,6 +434,8 @@ public class Model extends JPanel implements ActionListener {
                 showIntroScreen(g2d);
                 break;
             case gameOver:
+                showGameOverScreen(g2d);
+                break;
         }
 
         Toolkit.getDefaultToolkit().sync();
@@ -465,6 +476,11 @@ public class Model extends JPanel implements ActionListener {
                     }
                     break;
                 case gameOver:
+                    if (key == KeyEvent.VK_SPACE) {
+                        currentState = GameState.introScreen;
+                        initGame();
+                    }
+                    break;
             }
         }
     }
