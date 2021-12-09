@@ -323,10 +323,10 @@ public class Model extends JPanel implements ActionListener {
             for (x = 0; x < SCREEN_SIZE; x += BLOCK_SIZE) {
 
                 g2d.setColor(new Color(0,72,251));
-                g2d.setStroke(new BasicStroke(5));
+                g2d.setStroke(new BasicStroke(4));
 
                 if ((levelData[i] == 0)) {
-                    g2d.fillRect(x, y, BLOCK_SIZE, BLOCK_SIZE);
+                    //g2d.fillRect(x, y, BLOCK_SIZE, BLOCK_SIZE);
                 }
 
                 if ((screenData[i] & 1) != 0) {
