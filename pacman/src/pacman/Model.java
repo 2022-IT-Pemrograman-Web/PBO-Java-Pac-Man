@@ -33,7 +33,7 @@ public class Model extends JPanel implements ActionListener {
     private final int SCREEN_SIZE = N_BLOCKS * BLOCK_SIZE;
     private final int MAX_GHOSTS = 12;
     private final int PACMAN_SPEED = 6;
-
+    private int lvlCounter = 1;
     private int N_GHOSTS = 1;
     private int lives, score;
     private int highScore;
@@ -56,23 +56,7 @@ public class Model extends JPanel implements ActionListener {
     }
     private GameState currentState = GameState.introScreen;
 
-    private final short levelData[] = {
-            19, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 22,
-            17, 16, 16, 16, 16, 24, 16, 16, 16, 16, 16, 16, 16, 16, 20,
-            25, 24, 24, 24, 28, 0, 17, 16, 16, 16, 16, 16, 16, 16, 20,
-            0,  0,  0,  0,  0,  0, 17, 16, 16, 16, 16, 16, 16, 16, 20,
-            19, 18, 18, 18, 18, 18, 16, 16, 16, 16, 24, 24, 24, 24, 20,
-            17, 16, 16, 16, 16, 16, 16, 16, 16, 20, 0,  0,  0,   0, 21,
-            17, 16, 16, 16, 16, 16, 16, 16, 16, 20, 0,  0,  0,   0, 21,
-            17, 16, 16, 16, 24, 16, 16, 16, 16, 20, 0,  0,  0,   0, 21,
-            17, 16, 16, 20, 0, 17, 16, 16, 16, 16, 18, 18, 18, 18, 20,
-            17, 24, 24, 28, 0, 25, 24, 24, 16, 16, 16, 16, 16, 16, 20,
-            21, 0,  0,  0,  0,  0,  0,   0, 17, 16, 16, 16, 16, 16, 20,
-            17, 18, 18, 22, 0, 19, 18, 18, 16, 16, 16, 16, 16, 16, 20,
-            17, 16, 16, 20, 0, 17, 16, 16, 16, 16, 16, 16, 16, 16, 20,
-            17, 16, 16, 20, 0, 17, 16, 16, 16, 16, 16, 16, 16, 16, 20,
-            25, 24, 24, 24, 26, 24, 24, 24, 24, 24, 24, 24, 24, 24, 28
-    };
+    private final short[] levelData = new short[225];
 
     private final int validSpeeds[] = {1, 2, 3, 4, 6, 8};
     private final int maxSpeed = 6;
@@ -82,6 +66,7 @@ public class Model extends JPanel implements ActionListener {
     private Timer timer;
 
     public Model() {
+        loadMap();
         loadImages();
         loadHighScore();
         initVariables();
@@ -93,9 +78,28 @@ public class Model extends JPanel implements ActionListener {
     private URL loadImage(String fileName){
         return getClass().getResource("/images/" + fileName);
     }
+    //load map
+    private static Scanner input;
+    private void loadMap(){
+        int i = 0;
+        try {
+            if(lvlCounter % 2 == 0) input = new Scanner(Paths.get("C:\\Users\\yates\\IdeaProjects\\PBO-Java-Pac-Man\\pacman\\src\\map\\level02.txt")); //ganti path
+            else input = new Scanner(Paths.get("C:\\Users\\yates\\IdeaProjects\\PBO-Java-Pac-Man\\pacman\\src\\map\\level01.txt")); //ganti path
+            while (input.hasNext()) {
+                String[] data = input.nextLine().split(",");
+                for(int j = 0 ; j < data.length ; j++){
+                    levelData[i] = Short.parseShort(data[j]);
+                    i++;
+                }
+            }
+        }
+        catch (IOException ioException) {
+            System.err.println("Error opening file. Terminating.");
+            System.exit(1);
+        }
+    }
 
     //untuk membuka file dan menampilkan highscore
-    private static Scanner input;
     private void loadHighScore(){
         try {
             input = new Scanner(Paths.get("highscore.txt"));
@@ -200,14 +204,15 @@ public class Model extends JPanel implements ActionListener {
     private void showGameOverScreen(Graphics2D g2d){
         String gameOverString = "Game Over";
         String scoreString = "Your Score: " + score;
-        String newHighScore = "Congrats for your new highscore!";
+        String newHighScore = "Congrats new highscore!";
         g2d.setColor(Color.yellow);
-        g2d.setFont(new Font("Monospace", Font.PLAIN, 18));
-        g2d.drawString(gameOverString, (SCREEN_SIZE)/4, 150);
-        g2d.drawString(scoreString, (SCREEN_SIZE)/4, 200);
+        g2d.setFont(gamerFont);
+        g2d.drawString(gameOverString, (SCREEN_SIZE)/5, 150);
+        g2d.drawString(scoreString, (SCREEN_SIZE)/5, 200);
         if(newHighScoreb){
+            System.out.print("JALAN\n");
+            g2d.drawString(newHighScore,(SCREEN_SIZE)/5,250);
             newHighScoreb = false;
-            g2d.drawString(newHighScore,(SCREEN_SIZE)/4,200);
         }
     }
 
@@ -216,10 +221,11 @@ public class Model extends JPanel implements ActionListener {
         g.setColor(new Color(5, 181, 79));
         String s = "Score: " + score;
         g.drawString(s, SCREEN_SIZE / 2 + 96, SCREEN_SIZE + 16);
-
-        for (int i = 0; i < lives; i++) {
-            g.drawImage(heart, i * 28 + 8, SCREEN_SIZE + 1, this);
-        }
+        g.drawImage(heart,20,SCREEN_SIZE+1,this);
+        String StrLives = ""+ lives;
+        g.drawString(StrLives, SCREEN_SIZE/2 - 170, SCREEN_SIZE+16);
+        String strLvl = "lvl "+lvlCounter;
+        g.drawString(strLvl, SCREEN_SIZE/2 - 120, SCREEN_SIZE+16);
     }
 
     private void drawHighScore(Graphics2D g) {
@@ -245,7 +251,7 @@ public class Model extends JPanel implements ActionListener {
         if (finished) {
 
             score += 50;
-
+            lives++;
             if (N_GHOSTS < MAX_GHOSTS) {
                 N_GHOSTS++;
             }
@@ -253,7 +259,7 @@ public class Model extends JPanel implements ActionListener {
             if (currentSpeed < maxSpeed) {
                 currentSpeed++;
             }
-
+            lvlCounter++;
             initLevel();
         }
     }
@@ -357,7 +363,7 @@ public class Model extends JPanel implements ActionListener {
 
             }
             ghosts[i].updateMovement();
-//            fixEntityPos(ghosts[i]);
+            fixEntityPos(ghosts[i]);
             drawGhost(g2d, i);
             
             //detect death
@@ -486,10 +492,11 @@ public class Model extends JPanel implements ActionListener {
         score = 0;
         initLevel();
         currentSpeed = 3;
+        lvlCounter = 1;
     }
 
     private void initLevel() {
-
+        loadMap();
         int i;
         for (i = 0; i < N_BLOCKS * N_BLOCKS; i++) {
             screenData[i] = levelData[i];
