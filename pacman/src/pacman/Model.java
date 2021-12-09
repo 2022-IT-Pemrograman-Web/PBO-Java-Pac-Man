@@ -70,15 +70,15 @@ public class Model extends JPanel implements ActionListener {
 
 
     private void loadImages() {
-        urlDown = Model.class.getResource("/images/down.gif");
-    	urlUp = Model.class.getResource("/images/up.gif");
-    	urlLeft = Model.class.getResource("/images/left.gif");
-    	urlRight = Model.class.getResource("/images/right.gif");
-    	urlGhostLeft = Model.class.getResource("/images/ghostLeft.gif");
-    	urlGhostRight = Model.class.getResource("/images/ghostRight.gif");
-    	urlGhostUp = Model.class.getResource("/images/ghostUp.gif");
-    	urlGhostDown = Model.class.getResource("/images/ghostDown.gif");
-    	URL urlHeart = Model.class.getResource("/images/heart.png");
+        urlDown = getClass().getResource("/images/down.gif");
+    	urlUp = getClass().getResource("/images/up.gif");
+    	urlLeft = getClass().getResource("/images/left.gif");
+    	urlRight = getClass().getResource("/images/right.gif");
+    	urlGhostLeft = getClass().getResource("/images/ghostLeft.gif");
+    	urlGhostRight = getClass().getResource("/images/ghostRight.gif");
+    	urlGhostUp = getClass().getResource("/images/ghostUp.gif");
+    	urlGhostDown = getClass().getResource("/images/ghostDown.gif");
+    	URL urlHeart = getClass().getResource("/images/heart.png");
         heart = new ImageIcon(urlHeart).getImage();
     }
     private void initVariables() {

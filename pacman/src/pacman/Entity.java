@@ -32,7 +32,7 @@ public class Entity {
 		this.dy = dy;
 		this.speed = speed;
 		this.imgs[0] = new ImageIcon(urlLeft).getImage();
-		this.imgs[1] =new ImageIcon(urlRight).getImage();
+		this.imgs[1] = new ImageIcon(urlRight).getImage();
 		this.imgs[2] = new ImageIcon(urlUp).getImage();
 		this.imgs[3] = new ImageIcon(urlDown).getImage();
 	}
