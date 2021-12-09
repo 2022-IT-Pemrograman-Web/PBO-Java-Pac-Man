@@ -144,7 +144,7 @@ public class Model extends JPanel implements ActionListener {
         String start = "Press SPACE to start";
         Image aboImage,staImage;
         g2d.setColor(Color.yellow);
-        g2d.drawImage(titleImage,SCREEN_SIZE/4, SCREEN_SIZE/4, this);
+        g2d.drawImage(titleImage,SCREEN_SIZE/2 - 133, SCREEN_SIZE/4, 266,48,this);
         if(selectedButton % 2 == 0){
             staImage = startButton[1];
             aboImage = aboutButton[0];
@@ -153,8 +153,8 @@ public class Model extends JPanel implements ActionListener {
             staImage = startButton[0];
             aboImage = aboutButton[1];
         }
-        g2d.drawImage(staImage,SCREEN_SIZE*2/5, SCREEN_SIZE/2, this);
-        g2d.drawImage(aboImage,SCREEN_SIZE*2/5, SCREEN_SIZE/2 + 35, this);
+        g2d.drawImage(staImage,SCREEN_SIZE/2 - 65, SCREEN_SIZE/2, 287 ,48,this);
+        g2d.drawImage(aboImage,SCREEN_SIZE/2 - 65, SCREEN_SIZE/2 + 48, 287,48,this);
         //g2d.drawString(start, (SCREEN_SIZE)/4, 150);
     }
 
