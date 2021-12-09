@@ -16,7 +16,7 @@ public class Model extends JPanel implements ActionListener {
 
     private Dimension d;
     private final Font smallFont = new Font("Arial", Font.BOLD, 14);
-    private boolean inGame = false;
+    //private boolean inGame = false;
     private boolean dying = false;
 
     private final int BLOCK_SIZE = 24;
@@ -34,6 +34,13 @@ public class Model extends JPanel implements ActionListener {
 	
     private Entity playerPacMan;
     private Entity[] ghosts;
+
+    private enum GameState{
+        inGame,
+        introScreen,
+        gameOver
+    }
+    private GameState currentState = GameState.introScreen;
 
     private final short levelData[] = {
             19, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 22,
@@ -161,7 +168,7 @@ public class Model extends JPanel implements ActionListener {
         lives--;
 
         if (lives == 0) {
-            inGame = false;
+            currentState = GameState.introScreen;
         }
 
         continueLevel();
@@ -171,7 +178,7 @@ public class Model extends JPanel implements ActionListener {
     	//detect if pacman close to ghost with index id
         if (playerPacMan.x > (ghosts[id].x - 12) && playerPacMan.x < (ghosts[id].x + 12)
                 && playerPacMan.y > (ghosts[id].y - 12) && playerPacMan.y < (ghosts[id].y + 12)
-                && inGame) {
+                && currentState == GameState.inGame) {
 
             dying = true;
         }
@@ -410,10 +417,14 @@ public class Model extends JPanel implements ActionListener {
         drawMaze(g2d);
         drawScore(g2d);
 
-        if (inGame) {
-            playGame(g2d);
-        } else {
-            showIntroScreen(g2d);
+        switch (currentState){
+            case inGame:
+                playGame(g2d);
+                break;
+            case introScreen:
+                showIntroScreen(g2d);
+                break;
+            case gameOver:
         }
 
         Toolkit.getDefaultToolkit().sync();
@@ -429,27 +440,31 @@ public class Model extends JPanel implements ActionListener {
 
             int key = e.getKeyCode();
 
-            if (inGame) {
-                if (key == KeyEvent.VK_LEFT) {
-                    req_dx = -1;
-                    req_dy = 0;
-                } else if (key == KeyEvent.VK_RIGHT) {
-                    req_dx = 1;
-                    req_dy = 0;
-                } else if (key == KeyEvent.VK_UP) {
-                    req_dx = 0;
-                    req_dy = -1;
-                } else if (key == KeyEvent.VK_DOWN) {
-                    req_dx = 0;
-                    req_dy = 1;
-                } else if (key == KeyEvent.VK_ESCAPE && timer.isRunning()) {
-                    inGame = false;
-                }
-            } else {
-                if (key == KeyEvent.VK_SPACE) {
-                    inGame = true;
-                    initGame();
-                }
+            switch (currentState){
+                case inGame:
+                    if (key == KeyEvent.VK_LEFT) {
+                        req_dx = -1;
+                        req_dy = 0;
+                    } else if (key == KeyEvent.VK_RIGHT) {
+                        req_dx = 1;
+                        req_dy = 0;
+                    } else if (key == KeyEvent.VK_UP) {
+                        req_dx = 0;
+                        req_dy = -1;
+                    } else if (key == KeyEvent.VK_DOWN) {
+                        req_dx = 0;
+                        req_dy = 1;
+                    } else if (key == KeyEvent.VK_ESCAPE && timer.isRunning()) {
+                        currentState = GameState.introScreen;
+                    }
+                    break;
+                case introScreen:
+                    if (key == KeyEvent.VK_SPACE) {
+                        currentState = GameState.inGame;
+                        initGame();
+                    }
+                    break;
+                case gameOver:
             }
         }
     }
