@@ -25,6 +25,7 @@ public class Model extends JPanel implements ActionListener {
     private Dimension d;
     private final Font smallFont = new Font("Arial", Font.BOLD, 28);
     private Font gamerFont = FontLoader.getFontFromFile("ARCADECLASSIC", 62f);
+    private Font gamerFontSmall = FontLoader.getFontFromFile("ARCADECLASSIC", 48f);
     //private boolean inGame = false;
     private boolean dying = false;
     private boolean newHighScoreb = false;
@@ -212,8 +213,10 @@ public class Model extends JPanel implements ActionListener {
         g2d.drawString(scoreString, (SCREEN_SIZE)/5, 400);
         if(newHighScoreb){
             System.out.print("JALAN\n");
-            g2d.drawString(newHighScore,(SCREEN_SIZE)/5,500);
-            newHighScoreb = false;
+             g2d.setColor(Color.yellow);
+             g2d.setFont(gamerFontSmall);
+            g2d.drawString(newHighScore,(SCREEN_SIZE)/5-100,500);
+           // newHighScoreb = false;
         }
     }
 
@@ -399,11 +402,12 @@ public class Model extends JPanel implements ActionListener {
                 screenData[pos] = (short) (ch & 15);
                 score++;
             }
-            if(highScore < score){
+            if(highScore <= score){
                 highScore = score;
                 updateHighScore();
                 newHighScoreb = true;
-
+            }else{
+                newHighScoreb = false;
             }
             if (req_dx != 0 || req_dy != 0) {
                 if (!((req_dx == -1 && req_dy == 0 && (ch & 1) != 0)
@@ -493,6 +497,7 @@ public class Model extends JPanel implements ActionListener {
         initLevel();
         currentSpeed = 3;
         lvlCounter = 1;
+        N_GHOSTS = 1;
     }
 
     private void initLevel() {
