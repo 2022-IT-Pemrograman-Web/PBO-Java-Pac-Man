@@ -15,6 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import java.io.File;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Formatter;
 import java.util.Scanner;
@@ -86,8 +87,13 @@ public class Model extends JPanel implements ActionListener {
     private void loadMap(){
         int i = 0;
         try {
-            if(lvlCounter % 2 == 0) input = new Scanner(Paths.get("./src/map/level02.txt")); //ganti path
-            else input = new Scanner(Paths.get("./src/map/level01.txt")); //ganti path
+            String levelName = String.format("./src/map/level%d.txt", lvlCounter);
+            //cek apakah masi ada level map available
+            if(Files.exists(Paths.get(levelName))){
+                input = new Scanner(Paths.get(levelName)); //ganti path
+            }else{
+                input = new Scanner(Paths.get("./src/map/freelevel.txt")); //ganti path
+            }
             while (input.hasNext()) {
                 String[] data = input.nextLine().split(",");
                 for(int j = 0 ; j < data.length ; j++){
@@ -119,7 +125,7 @@ public class Model extends JPanel implements ActionListener {
     //untuk mengupdate highscore
     private void updateHighScore(){
         try {
-            FileWriter myWriter = new FileWriter("highscore.txt");
+            FileWriter myWriter = new FileWriter("../highscore.txt");
             String otp = Integer.toString(highScore);
             myWriter.write(otp);
             myWriter.close();
