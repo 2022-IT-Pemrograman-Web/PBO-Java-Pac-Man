@@ -44,6 +44,7 @@ public class Model extends JPanel implements ActionListener {
     private Image titleImage;
     private Image[] startButton;
     private Image[] aboutButton;
+    private Image[] exitButton;
     private int selectedButton = 0;
     private int req_dx, req_dy;
 	
@@ -53,7 +54,8 @@ public class Model extends JPanel implements ActionListener {
     private enum GameState{
         inGame,
         introScreen,
-        gameOver
+        gameOver,
+        aboutScreen
     }
     private GameState currentState = GameState.introScreen;
 
@@ -132,23 +134,26 @@ public class Model extends JPanel implements ActionListener {
     private void loadImages() {
         //load url
         urlDown = loadImage("down.gif");
-    	urlUp = loadImage("up.gif");
-    	urlLeft = loadImage("left.gif");
-    	urlRight = loadImage("right.gif");
-    	urlGhostLeft = loadImage("ghostLeft.gif");
-    	urlGhostRight = loadImage("ghostRight.gif");
-    	urlGhostUp = loadImage("ghostUp.gif");
-    	urlGhostDown = loadImage("ghostDown.gif");
+        urlUp = loadImage("up.gif");
+        urlLeft = loadImage("left.gif");
+        urlRight = loadImage("right.gif");
+        urlGhostLeft = loadImage("ghostLeft.gif");
+        urlGhostRight = loadImage("ghostRight.gif");
+        urlGhostUp = loadImage("ghostUp.gif");
+        urlGhostDown = loadImage("ghostDown.gif");
         URL urlTitle = loadImage("title.png");
-    	URL urlHeart = loadImage("heart.png");
+        URL urlHeart = loadImage("heart.png");
         URL urlStart1 = loadImage("Start1.png");
         URL urlStart2 = loadImage("Start2.png");
         URL urlAbout1 = loadImage("About1.png");
         URL urlAbout2 = loadImage("About2.png");
+        URL urlExit1 = loadImage("Exit1.png");
+        URL urlExit2 = loadImage("Exit2.png");
 
         //get images
         startButton = new Image[2];
         aboutButton = new Image[2];
+        exitButton = new Image[2];
 
         heart = new ImageIcon(urlHeart).getImage();
         titleImage = new ImageIcon(urlTitle).getImage();
@@ -156,6 +161,8 @@ public class Model extends JPanel implements ActionListener {
         startButton[1] = new ImageIcon(urlStart2).getImage();
         aboutButton[0] = new ImageIcon(urlAbout1).getImage();
         aboutButton[1] = new ImageIcon(urlAbout2).getImage();
+        exitButton[0] = new ImageIcon(urlExit1).getImage();
+        exitButton[1] = new ImageIcon(urlExit2).getImage();
     }
     private void initVariables() {
 
@@ -185,22 +192,49 @@ public class Model extends JPanel implements ActionListener {
     }
 
     private void showIntroScreen(Graphics2D g2d) {
-
+        Image aboImage,staImage,exiImage;
+        //boolean staButton = false, aboButton = false,
         String start = "Press SPACE to start";
-        Image aboImage,staImage;
         g2d.setColor(Color.yellow);
         g2d.drawImage(titleImage,SCREEN_SIZE/2 - 266, SCREEN_SIZE/4, 532,96,this);
-        if(selectedButton % 2 == 0){
+        if(selectedButton % 3 == 0){
             staImage = startButton[1];
             aboImage = aboutButton[0];
+            exiImage = exitButton[0];
         }
-        else{
+        else if(selectedButton % 3 == 1) {
             staImage = startButton[0];
             aboImage = aboutButton[1];
+            exiImage = exitButton[0];
+        }
+        else {
+            staImage = startButton[0];
+            aboImage = aboutButton[0];
+            exiImage = exitButton[1];
         }
         g2d.drawImage(staImage,SCREEN_SIZE/2 - 130, SCREEN_SIZE/2, 574 ,96,this);
         g2d.drawImage(aboImage,SCREEN_SIZE/2 - 130, SCREEN_SIZE/2 + 96, 574,96,this);
+        g2d.drawImage(exiImage,SCREEN_SIZE/2 - 130, SCREEN_SIZE/2 + 192, 574,96,this);
         //g2d.drawString(start, (SCREEN_SIZE)/4, 150);
+    }
+
+
+    private void showAboutScreen(Graphics2D g2d) {
+        Font smallGamerFont = FontLoader.getFontFromFile("ARCADECLASSIC", 32f);
+        String aboutText = "NORMAL PACMAN!";
+        String aboutText2 = "Built By ";
+        String aboutText3 = "Anak Agung Yatestha Parwata  5025201234";
+        String aboutText4 = "Januar Evan  5025201210";
+        String aboutText5 =  "Putu Ravindra Wiguna  5025201237";
+        String aboutText6 = "Ridzki Raihan Alfaza  5025201178";
+        g2d.setColor(Color.yellow);
+        g2d.setFont(smallGamerFont);
+        g2d.drawString(aboutText, (SCREEN_SIZE)/5 - 100, 100);
+        g2d.drawString(aboutText2, (SCREEN_SIZE)/5- 100, 300);
+        g2d.drawString(aboutText3, (SCREEN_SIZE)/5- 100, 320);
+        g2d.drawString(aboutText4, (SCREEN_SIZE)/5- 100, 340);
+        g2d.drawString(aboutText5, (SCREEN_SIZE)/5- 100, 360);
+        g2d.drawString(aboutText6, (SCREEN_SIZE)/5- 100, 380);
     }
 
     private void showGameOverScreen(Graphics2D g2d){
@@ -548,6 +582,9 @@ public class Model extends JPanel implements ActionListener {
             case inGame:
                 playGame(g2d);
                 break;
+            case aboutScreen:
+                showAboutScreen(g2d);
+                break;
             case introScreen:
                 showIntroScreen(g2d);
                 break;
@@ -587,22 +624,43 @@ public class Model extends JPanel implements ActionListener {
                         currentState = GameState.introScreen;
                     }
                     break;
+                case aboutScreen:
+                    if(key == KeyEvent.VK_ENTER) {
+                        selectedButton = 0;
+                        currentState = GameState.introScreen;
+                        repaint();
+                    }
                 case introScreen:
-                    if (key == KeyEvent.VK_SPACE) {
-                        if(selectedButton % 2 == 0) {
+                    if (key == KeyEvent.VK_ENTER) {
+                        if(selectedButton % 3 == 0) {
                             currentState = GameState.inGame;
                             initGame();
                         }
-                        else{
-                            //about di sini
+                        if(selectedButton % 3 == 1){
+                            currentState = GameState.aboutScreen;
+                        }
+                        if(selectedButton % 3 == 2){
+                            System.exit(0);
                         }
                     }
-                    if (key == KeyEvent.VK_UP || key == KeyEvent.VK_DOWN) {
-                        selectedButton ++;
+                    if(key == KeyEvent.VK_ESCAPE) {
+                        System.exit(0);
+                    }
+                    if (key == KeyEvent.VK_UP) {
+                        selectedButton--;
+                        if(selectedButton < 0) {
+                            selectedButton = 2;
+                        }
+                    }
+                    else if(key == KeyEvent.VK_DOWN) {
+                        selectedButton++;
+                        if(selectedButton == 3) {
+                            selectedButton = 0;
+                        }
                     }
                     break;
                 case gameOver:
-                    if (key == KeyEvent.VK_SPACE) {
+                    if (key == KeyEvent.VK_ENTER || key == KeyEvent.VK_SPACE) {
                         currentState = GameState.introScreen;
                         initGame();
                     }
