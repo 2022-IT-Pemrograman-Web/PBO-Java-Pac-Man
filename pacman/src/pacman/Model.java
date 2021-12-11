@@ -6,7 +6,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 
@@ -14,19 +13,19 @@ import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Formatter;
+import java.util.Random;
 import java.util.Scanner;
 import java.io.FileWriter;
+import java.util.Vector;
 
 public class Model extends JPanel implements ActionListener {
 
     private Dimension d;
     private final Font smallFont = new Font("Arial", Font.BOLD, 28);
-    private Font gamerFont = FontLoader.getFontFromFile("ARCADECLASSIC", 62f);
-    private Font gamerFontSmall = FontLoader.getFontFromFile("ARCADECLASSIC", 48f);
+    private final Font gamerFont = FontLoader.getFontFromFile("ARCADECLASSIC", 62f);
+    private final Font gamerFontSmall = FontLoader.getFontFromFile("ARCADECLASSIC", 48f);
     //private boolean inGame = false;
     private boolean dying = false;
     private boolean newHighScoreb = false;
@@ -37,10 +36,10 @@ public class Model extends JPanel implements ActionListener {
     private final int PACMAN_SPEED = 6;
     private int lvlCounter = 1;
     private int N_GHOSTS = 1;
-    private int lives, score;
+    private int score;
     private int highScore;
     private int[] dx, dy;
-    private URL urlUp, urlDown, urlRight, urlLeft, urlGhostLeft, urlGhostRight, urlGhostUp, urlGhostDown;
+    private URL urlUp, urlDown, urlRight, urlLeft, urlGhostLeft, urlGhostRight, urlGhostUp, urlGhostDown, urlHeart;
     private Image heart;
     private Image titleImage;
     private Image[] startButton;
@@ -48,21 +47,26 @@ public class Model extends JPanel implements ActionListener {
     private Image[] exitButton;
     private int selectedButton = 0;
     private int req_dx, req_dy;
-	
-    private Entity playerPacMan;
-    private Entity[] ghosts;
 
+	
+    private Player player;
+    private int lives;
+    private Entity[] ghosts;
+    private Vector<PowerUp> powerList = new Vector<PowerUp>();
+    private int totalPowerUpType = 2;
+    Random numGenerator = new Random();
     private enum GameState{
         inGame,
         introScreen,
         gameOver,
         aboutScreen
     }
+
     private GameState currentState = GameState.introScreen;
 
     private final short[] levelData = new short[225];
 
-    private final int validSpeeds[] = {1, 2, 3, 4, 6, 8};
+    private final int[] validSpeeds = {1, 2, 3, 4, 6, 8};
     private final int maxSpeed = 6;
 
     private int currentSpeed = 3;
@@ -96,8 +100,8 @@ public class Model extends JPanel implements ActionListener {
             }
             while (input.hasNext()) {
                 String[] data = input.nextLine().split(",");
-                for(int j = 0 ; j < data.length ; j++){
-                    levelData[i] = Short.parseShort(data[j]);
+                for (String datum : data) {
+                    levelData[i] = Short.parseShort(datum);
                     i++;
                 }
             }
@@ -148,7 +152,7 @@ public class Model extends JPanel implements ActionListener {
         urlGhostUp = loadImage("ghostUp.gif");
         urlGhostDown = loadImage("ghostDown.gif");
         URL urlTitle = loadImage("title.png");
-        URL urlHeart = loadImage("heart.png");
+        urlHeart = loadImage("heart.png");
         URL urlStart1 = loadImage("Start1.png");
         URL urlStart2 = loadImage("Start2.png");
         URL urlAbout1 = loadImage("About1.png");
@@ -185,12 +189,12 @@ public class Model extends JPanel implements ActionListener {
     private void playGame(Graphics2D g2d) {
 
         if (dying) {
-
+            System.out.print("bangka SIR\n");
             death();
 
         } else {
-
             movePacman();
+            powerUpLogic(g2d);
             drawPacman(g2d);
             moveGhosts(g2d);
             checkMaze();
@@ -200,7 +204,7 @@ public class Model extends JPanel implements ActionListener {
     private void showIntroScreen(Graphics2D g2d) {
         Image aboImage,staImage,exiImage;
         //boolean staButton = false, aboButton = false,
-        String start = "Press SPACE to start";
+//        String start = "Press SPACE to start";
         g2d.setColor(Color.yellow);
         g2d.drawImage(titleImage,SCREEN_SIZE/2 - 266, SCREEN_SIZE/4, 532,96,this);
         if(selectedButton % 3 == 0){
@@ -266,7 +270,7 @@ public class Model extends JPanel implements ActionListener {
         String s = "Score: " + score;
         g.drawString(s, SCREEN_SIZE / 2 + 192, SCREEN_SIZE + 32);
         g.drawImage(heart,40,SCREEN_SIZE+2,this);
-        String StrLives = ""+ lives;
+        String StrLives = ""+ player.getLives();
         g.drawString(StrLives, SCREEN_SIZE/2 - 340, SCREEN_SIZE+32);
         String strLvl = "lvl "+lvlCounter;
         g.drawString(strLvl, SCREEN_SIZE/2 - 240, SCREEN_SIZE+32);
@@ -295,7 +299,7 @@ public class Model extends JPanel implements ActionListener {
         if (finished) {
 
             score += 50;
-            lives++;
+            player.increaseLives();
             if (N_GHOSTS < MAX_GHOSTS) {
                 N_GHOSTS++;
             }
@@ -310,9 +314,10 @@ public class Model extends JPanel implements ActionListener {
 
     private void death() {
 
-        lives--;
+        player.decreaseLives();
+        lives = player.getLives();
 
-        if (lives == 0) {
+        if (player.getLives() == 0) {
             currentState = GameState.gameOver;
         }
 
@@ -321,15 +326,20 @@ public class Model extends JPanel implements ActionListener {
 
     private void detectDeath(int id) {
     	//detect if pacman close to ghost with index id
-        if (playerPacMan.x > (ghosts[id].x - 24) && playerPacMan.x < (ghosts[id].x + 24)
-                && playerPacMan.y > (ghosts[id].y - 24) && playerPacMan.y < (ghosts[id].y + 24)
+        if (player.x > (ghosts[id].x - 24) && player.x < (ghosts[id].x + 24)
+                && player.y > (ghosts[id].y - 24) && player.y < (ghosts[id].y + 24)
                 && currentState == GameState.inGame) {
             dying = true;
+            System.out.print("KENAK GHOST SIR\n");
         }
     }
     
     private void drawEntity(Graphics2D g2d, int direction, Entity en) {
     	g2d.drawImage(en.imgs[direction], en.x + 2, en.y + 2, this);
+    }
+
+    private void drawPowerUp(Graphics2D g2d, PowerUp pu){
+        g2d.drawImage(pu.img, pu.x + 2, pu.y + 2, this);
     }
 
     private void fixEntityPos(Entity en){
@@ -354,7 +364,7 @@ public class Model extends JPanel implements ActionListener {
 
         for (int i = 0; i < N_GHOSTS; i++) {
             if (ghosts[i].x % BLOCK_SIZE == 0 && ghosts[i].y % BLOCK_SIZE == 0) {
-                pos = ghosts[i].x / BLOCK_SIZE + N_BLOCKS * (int) (ghosts[i].y / BLOCK_SIZE);
+                pos = ghosts[i].x / BLOCK_SIZE + N_BLOCKS * (ghosts[i].y / BLOCK_SIZE);
 
                 count = 0;
 
@@ -415,7 +425,7 @@ public class Model extends JPanel implements ActionListener {
     }
 
     private void drawGhost(Graphics2D g2d, int id) {
-    	int direction = -1;
+    	int direction;
         if (ghosts[id].dx == -1) {
         	//draw player with image on index 0 a.k.a left
         	direction = 0;
@@ -434,8 +444,8 @@ public class Model extends JPanel implements ActionListener {
         int pos;
         short ch;
 
-        if (playerPacMan.x % BLOCK_SIZE == 0 && playerPacMan.y % BLOCK_SIZE == 0) {
-            pos = playerPacMan.x / BLOCK_SIZE + N_BLOCKS * (int) (playerPacMan.y / BLOCK_SIZE);
+        if (player.x % BLOCK_SIZE == 0 && player.y % BLOCK_SIZE == 0) {
+            pos = player.x / BLOCK_SIZE + N_BLOCKS * (player.y / BLOCK_SIZE);
             ch = screenData[pos];
 
             if ((ch & 16) != 0) {
@@ -454,26 +464,26 @@ public class Model extends JPanel implements ActionListener {
                         || (req_dx == 1 && req_dy == 0 && (ch & 4) != 0)
                         || (req_dx == 0 && req_dy == -1 && (ch & 2) != 0)
                         || (req_dx == 0 && req_dy == 1 && (ch & 8) != 0))) {
-                	playerPacMan.dx = req_dx;
-                	playerPacMan.dy = req_dy;
+                	player.dx = req_dx;
+                	player.dy = req_dy;
                 }
             }
 
             // Check for standstill
-            if ((playerPacMan.dx == -1 && playerPacMan.dy == 0 && (ch & 1) != 0)
-                    || (playerPacMan.dx == 1 && playerPacMan.dy == 0 && (ch & 4) != 0)
-                    || (playerPacMan.dx == 0 && playerPacMan.dy == -1 && (ch & 2) != 0)
-                    || (playerPacMan.dx == 0 && playerPacMan.dy == 1 && (ch & 8) != 0)) {
-            	playerPacMan.dx = 0;
-            	playerPacMan.dy = 0;
+            if ((player.dx == -1 && player.dy == 0 && (ch & 1) != 0)
+                    || (player.dx == 1 && player.dy == 0 && (ch & 4) != 0)
+                    || (player.dx == 0 && player.dy == -1 && (ch & 2) != 0)
+                    || (player.dx == 0 && player.dy == 1 && (ch & 8) != 0)) {
+            	player.dx = 0;
+            	player.dy = 0;
             }
         }
-        playerPacMan.updateMovement();
-        fixEntityPos(playerPacMan);
+        player.updateMovement();
+        fixEntityPos(player);
     }
 
     private void drawPacman(Graphics2D g2d) {
-    	int direction = -1;
+    	int direction;
         if (req_dx == -1) {
         	//draw player with image on index 0 a.k.a left
         	direction = 0;
@@ -484,7 +494,7 @@ public class Model extends JPanel implements ActionListener {
         } else {
         	direction = 3;
         }
-        drawEntity(g2d, direction, playerPacMan);
+        drawEntity(g2d, direction, player);
     }
 
     private void drawMaze(Graphics2D g2d) {
@@ -497,10 +507,6 @@ public class Model extends JPanel implements ActionListener {
 
                 g2d.setColor(new Color(0,72,251));
                 g2d.setStroke(new BasicStroke(8));
-
-                if ((levelData[i] == 0)) {
-                    //g2d.fillRect(x, y, BLOCK_SIZE, BLOCK_SIZE);
-                }
 
                 if ((screenData[i] & 1) != 0) {
                     g2d.drawLine(x, y, x, y + BLOCK_SIZE - 2);
@@ -530,8 +536,49 @@ public class Model extends JPanel implements ActionListener {
         }
     }
 
+    private void powerUpLogic(Graphics2D g2d){
+        //cek spawn
+        if(score % 250 == 0 & score > 0){
+            //spawn the poweup
+            int powerKind = numGenerator.nextInt(2);
+            switch (powerKind) {
+                case 0 :
+                    powerList.add(new HeartPower(ghosts[0].x, ghosts[0].y, urlHeart));
+                    break;
+                case 1 :
+                    powerList.add(new DoubleSpeedPower(ghosts[0].x, ghosts[0].y, loadImage("thunder.gif")));
+                    break;
+            }
+            score+=1;
+        }
+
+        if(!powerList.isEmpty()){
+            PowerUp curPower;
+            //check for collision
+            for(int i = 0;i<powerList.size();i++){
+                curPower = powerList.get(i);
+                if(curPower.isCollided(player)){
+                    if(curPower instanceof HeartPower){
+                        curPower.activatePower(player);
+                    }
+                    if(curPower instanceof DoubleSpeedPower){
+                        curPower.activatePower(player);
+                    }
+                    powerList.remove(i);
+                }
+            }
+
+            //draw it
+            for(int i = 0;i<powerList.size();i++) {
+                drawPowerUp(g2d, powerList.get(i));
+            }
+        }
+//        System.out.print("DONE POWER UP SIR\n");
+    }
+
     private void initGame() {
 
+//        player.setLives(3);
         lives = 3;
         score = 0;
         initLevel();
@@ -546,7 +593,7 @@ public class Model extends JPanel implements ActionListener {
         for (i = 0; i < N_BLOCKS * N_BLOCKS; i++) {
             screenData[i] = levelData[i];
         }
-
+        System.out.print("DONE init SIR\n");
         continueLevel();
     }
 
@@ -554,22 +601,39 @@ public class Model extends JPanel implements ActionListener {
 
         int dx = 1;
         int random;
+        int startGhost_x = numGenerator.nextInt(15), startGhost_y = numGenerator.nextInt(15);
+        int ghostOneDimensionPos = startGhost_x + startGhost_y*N_BLOCKS;
+        while(screenData[ghostOneDimensionPos] != 16){
+            startGhost_x = numGenerator.nextInt(15); startGhost_y = numGenerator.nextInt(15);
+            ghostOneDimensionPos = startGhost_x + startGhost_y*N_BLOCKS;
 
+        }
+        System.out.print(String.format("go %d %d\n", startGhost_x, startGhost_y));
         for (int i = 0; i < N_GHOSTS; i++) {
             random = (int) (Math.random() * (currentSpeed + 1));
 
             if (random > currentSpeed) {
                 random = currentSpeed;
             }
+
             //create new ghost with this configuration
-            ghosts[i] = new Entity(4 * BLOCK_SIZE, 4 * BLOCK_SIZE, 0, dx, validSpeeds[random], urlGhostLeft, urlGhostRight, urlGhostUp, urlGhostDown);
+            ghosts[i] = new Entity(startGhost_x*BLOCK_SIZE, startGhost_y*BLOCK_SIZE, 0, dx, validSpeeds[random], urlGhostLeft, urlGhostRight, urlGhostUp, urlGhostDown);
             dx = -dx;
         }
         //create new player
-        playerPacMan = new Entity(7 * BLOCK_SIZE, 11 * BLOCK_SIZE, 0, 0, PACMAN_SPEED, urlLeft, urlRight, urlUp, urlDown);
+        //create a good start pos
+        int start_x = numGenerator.nextInt(15), start_y = numGenerator.nextInt(15);
+        int oneDimensionPos = start_x + start_y*N_BLOCKS;
+        while(screenData[oneDimensionPos] != 16 && oneDimensionPos == ghostOneDimensionPos){
+            start_x = numGenerator.nextInt(15); start_y = numGenerator.nextInt(15);
+            oneDimensionPos = start_x + start_y*N_BLOCKS;
+        }
+        System.out.print(String.format("done %d %d\n", start_x, start_y));
+        player = new Player(start_x*BLOCK_SIZE, start_y*BLOCK_SIZE, 0, 0, PACMAN_SPEED, urlLeft, urlRight, urlUp, urlDown, lives);
         req_dx = 0;		// reset direction controls
         req_dy = 0;
         dying = false;
+        System.out.print("DONE continue SIR\n");
     }
 
 

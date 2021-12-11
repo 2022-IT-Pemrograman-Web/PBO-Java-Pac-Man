@@ -8,11 +8,7 @@ import java.net.URL;
 import javax.swing.ImageIcon;
 
 //Class for all the entity in the game
-public class Entity {
-	//every entity has a coordinate
-	protected int x;
-	protected int y;
-	
+public class Entity extends GameObject{
 	//every entity has a direction
 	protected int dx;
 	protected int dy;
@@ -26,8 +22,7 @@ public class Entity {
 	//constructor
 	public Entity(int x, int y, int dx, int dy, int speed, URL urlLeft, URL urlRight, URL urlUp, URL urlDown) {
 		//set / initialize the position direction, speed, and images
-		this.x = x;
-		this.y = y;
+		super(x, y);
 		this.dx = dx;
 		this.dy = dy;
 		this.speed = speed;
@@ -41,13 +36,5 @@ public class Entity {
 	public void updateMovement() {
 		x = x + dx * speed;
 		y = y + dy * speed;
-	}
-
-	public int getX() {
-		return x;
-	}
-
-	public int getY() {
-		return y;
 	}
 }
