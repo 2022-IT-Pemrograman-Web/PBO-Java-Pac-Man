@@ -195,7 +195,7 @@ public class Model extends JPanel implements ActionListener {
     private void playGame(Graphics2D g2d) {
 
         if (dying) {
-            System.out.print("bangka SIR\n");
+//            System.out.print("bangka SIR\n");
             death();
 
         } else {
@@ -342,7 +342,7 @@ public class Model extends JPanel implements ActionListener {
                 && player.y > (ghosts[id].y - 24) && player.y < (ghosts[id].y + 24)
                 && currentState == GameState.inGame) {
             dying = true;
-            System.out.print("KENAK GHOST SIR\n");
+//            System.out.print("KENAK GHOST SIR\n");
         }
     }
     
@@ -539,7 +539,7 @@ public class Model extends JPanel implements ActionListener {
         score = 0;
         initLevel();
         currentSpeed = 3;
-        lvlCounter = 4;
+        lvlCounter = 1;
         N_GHOSTS = 1;
     }
 
@@ -549,7 +549,7 @@ public class Model extends JPanel implements ActionListener {
         for (i = 0; i < N_BLOCKS * N_BLOCKS; i++) {
             screenData[i] = levelData[i];
         }
-        System.out.print("DONE init SIR\n");
+//        System.out.print("DONE init SIR\n");
         continueLevel();
     }
 
@@ -564,7 +564,7 @@ public class Model extends JPanel implements ActionListener {
             ghostOneDimensionPos = startGhost_x + startGhost_y*N_BLOCKS;
 
         }
-        System.out.print(String.format("go %d %d\n", startGhost_x, startGhost_y));
+//        System.out.print(String.format("go %d %d\n", startGhost_x, startGhost_y));
         for (int i = 0; i < N_GHOSTS; i++) {
             random = (int) (Math.random() * (currentSpeed + 1));
 
@@ -584,13 +584,13 @@ public class Model extends JPanel implements ActionListener {
             start_x = numGenerator.nextInt(15); start_y = numGenerator.nextInt(15);
             oneDimensionPos = start_x + start_y*N_BLOCKS;
         }
-        System.out.print(String.format("done %d %d\n", start_x, start_y));
+//        System.out.print(String.format("done %d %d\n", start_x, start_y));
         player = new Player(start_x*BLOCK_SIZE, start_y*BLOCK_SIZE, 0, 0, PACMAN_SPEED, urlLeft, urlRight, urlUp, urlDown, lives);
         req_dx = 0;		// reset direction controls
         req_dy = 0;
         dying = false;
         scoreWeight = 1;
-        System.out.print("DONE continue SIR\n");
+//        System.out.print("DONE continue SIR\n");
     }
 
 
