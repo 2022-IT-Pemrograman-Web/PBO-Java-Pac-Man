@@ -300,6 +300,7 @@ public class Model extends JPanel implements ActionListener {
 
             score += 50;
             player.increaseLives();
+            lives = player.getLives();
             if (N_GHOSTS < MAX_GHOSTS) {
                 N_GHOSTS++;
             }
