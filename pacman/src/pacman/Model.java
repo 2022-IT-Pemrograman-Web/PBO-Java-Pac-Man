@@ -412,40 +412,29 @@ public class Model extends JPanel implements ActionListener {
             }else{
                 newHighScoreb = false;
             }
-            if (req_dx != 0 || req_dy != 0) {
-                if (!((req_dx == -1 && req_dy == 0 && (ch & 1) != 0)
-                        || (req_dx == 1 && req_dy == 0 && (ch & 4) != 0)
-                        || (req_dx == 0 && req_dy == -1 && (ch & 2) != 0)
-                        || (req_dx == 0 && req_dy == 1 && (ch & 8) != 0))) {
-                	player.dx = req_dx;
-                	player.dy = req_dy;
-                }
-            }
+            player.movePlayer(ch);
 
-            // Check for standstill
-            if ((player.dx == -1 && player.dy == 0 && (ch & 1) != 0)
-                    || (player.dx == 1 && player.dy == 0 && (ch & 4) != 0)
-                    || (player.dx == 0 && player.dy == -1 && (ch & 2) != 0)
-                    || (player.dx == 0 && player.dy == 1 && (ch & 8) != 0)) {
-            	player.dx = 0;
-            	player.dy = 0;
-            }
         }
         player.updateMovement();
         fixEntityPos(player);
     }
 
     private void drawPacman(Graphics2D g2d) {
-    	int direction;
-        if (req_dx == -1) {
-        	//draw player with image on index 0 a.k.a left
-        	direction = 0;
-        } else if (req_dx == 1) {
-        	direction = 1;
-        } else if (req_dy == -1) {
-        	direction = 2;
-        } else {
-        	direction = 3;
+    	Player.Direction pFacing = player.isFacing;
+        int direction;
+        switch (pFacing){
+            case LEFT:
+                direction = 0;
+                break;
+            case RIGHT:
+                direction = 1;
+                break;
+            case UP:
+                direction = 2;
+                break;
+            default:
+                direction = 3;
+                break;
         }
         drawEntity(g2d, direction, player);
     }
@@ -631,20 +620,10 @@ public class Model extends JPanel implements ActionListener {
 
             switch (currentState){
                 case inGame:
-                    if (key == KeyEvent.VK_LEFT) {
-                        req_dx = -1;
-                        req_dy = 0;
-                    } else if (key == KeyEvent.VK_RIGHT) {
-                        req_dx = 1;
-                        req_dy = 0;
-                    } else if (key == KeyEvent.VK_UP) {
-                        req_dx = 0;
-                        req_dy = -1;
-                    } else if (key == KeyEvent.VK_DOWN) {
-                        req_dx = 0;
-                        req_dy = 1;
-                    } else if (key == KeyEvent.VK_ESCAPE && timer.isRunning()) {
-                        currentState = GameState.introScreen;
+                    if (!player.getInput(key)) { //if player doesn't get a movement input
+                        if (key == KeyEvent.VK_ESCAPE && timer.isRunning()) {
+                            currentState = GameState.introScreen;
+                        }
                     }
                     break;
                 case aboutScreen:
