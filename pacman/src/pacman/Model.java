@@ -704,6 +704,7 @@ public class Model extends JPanel implements ActionListener {
                     if (key == KeyEvent.VK_ENTER) {
                         if(selectedButton % 3 == 0) {
                             currentState = GameState.inGame;
+                            SoundPlayer.playSound("bruh.wav");
                             initGame();
                         }
                         if(selectedButton % 3 == 1){
