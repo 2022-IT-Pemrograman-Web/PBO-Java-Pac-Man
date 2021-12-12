@@ -53,7 +53,7 @@ public class Model extends JPanel implements ActionListener {
     private int selectedButton = 0;
     private int req_dx, req_dy;
 
-	
+	private int scoreWeight = 1;
     private Player player;
     private int lives;
     private Ghost[] ghosts;
@@ -415,7 +415,7 @@ public class Model extends JPanel implements ActionListener {
             if ((ch & 16) != 0) {
                 screenData[pos] = (short) (ch & 15);
                 SoundPlayer.playSound("eating.wav");
-                score++;
+                score+=scoreWeight;
             }
             if(highScore <= score){
                 highScore = score;
@@ -500,10 +500,10 @@ public class Model extends JPanel implements ActionListener {
                     powerList.add(new HeartPower(ghosts[0].x, ghosts[0].y, urlHeart));
                     break;
                 case 1 :
-                    powerList.add(new DoubleSpeedPower(ghosts[0].x, ghosts[0].y, loadImage("thunder.gif")));
+                    powerList.add(new ScoreWeightPower(ghosts[0].x, ghosts[0].y, loadImage("thunder.gif")));
                     break;
             }
-            score+=1;
+            score+=scoreWeight;
         }
 
         if(!powerList.isEmpty()){
@@ -515,8 +515,9 @@ public class Model extends JPanel implements ActionListener {
                     if(curPower instanceof HeartPower){
                         curPower.activatePower(player);
                     }
-                    if(curPower instanceof DoubleSpeedPower){
-                        curPower.activatePower(player);
+                    if(curPower instanceof ScoreWeightPower){
+                        scoreWeight = curPower.activatePower(scoreWeight);
+                        System.out.println(scoreWeight);
                     }
                     powerList.remove(i);
                 }
@@ -537,7 +538,7 @@ public class Model extends JPanel implements ActionListener {
         score = 0;
         initLevel();
         currentSpeed = 3;
-        lvlCounter = 1;
+        lvlCounter = 4;
         N_GHOSTS = 1;
     }
 
@@ -587,6 +588,7 @@ public class Model extends JPanel implements ActionListener {
         req_dx = 0;		// reset direction controls
         req_dy = 0;
         dying = false;
+        scoreWeight = 1;
         System.out.print("DONE continue SIR\n");
     }
 

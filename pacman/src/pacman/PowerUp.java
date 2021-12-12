@@ -13,8 +13,8 @@ public class PowerUp extends GameObject{
         this.img = new ImageIcon(urlImg).getImage();
     }
 
-    public void activatePower(Entity en){
-        return;
+    public int activatePower(int x){
+        return x;
     }
     public void activatePower(Player p){
         return;
