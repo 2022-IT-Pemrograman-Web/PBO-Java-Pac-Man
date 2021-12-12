@@ -51,7 +51,7 @@ public class Model extends JPanel implements ActionListener {
 	
     private Player player;
     private int lives;
-    private Entity[] ghosts;
+    private Ghost[] ghosts;
     private Vector<PowerUp> powerList = new Vector<PowerUp>();
     private int totalPowerUpType = 2;
     Random numGenerator = new Random();
@@ -181,7 +181,7 @@ public class Model extends JPanel implements ActionListener {
         dx = new int[4];
         dy = new int[4];
 
-        ghosts = new Entity[MAX_GHOSTS];
+        ghosts = new Ghost[MAX_GHOSTS];
         timer = new Timer(40, this);
         timer.start();
     }
@@ -364,56 +364,9 @@ public class Model extends JPanel implements ActionListener {
 
         for (int i = 0; i < N_GHOSTS; i++) {
             if (ghosts[i].x % BLOCK_SIZE == 0 && ghosts[i].y % BLOCK_SIZE == 0) {
-                pos = ghosts[i].x / BLOCK_SIZE + N_BLOCKS * (ghosts[i].y / BLOCK_SIZE);
+                pos = ghosts[i].getScreenPos(BLOCK_SIZE, N_BLOCKS);
 
-                count = 0;
-
-                if ((screenData[pos] & 1) == 0 && ghosts[i].dx != 1) {
-                    dx[count] = -1;
-                    dy[count] = 0;
-                    count++;
-                }
-
-                if ((screenData[pos] & 2) == 0 && ghosts[i].dy != 1) {
-                    dx[count] = 0;
-                    dy[count] = -1;
-                    count++;
-                }
-
-                if ((screenData[pos] & 4) == 0 && ghosts[i].dx != -1) {
-                    dx[count] = 1;
-                    dy[count] = 0;
-                    count++;
-                }
-
-                if ((screenData[pos] & 8) == 0 && ghosts[i].dy != -1) {
-                    dx[count] = 0;
-                    dy[count] = 1;
-                    count++;
-                }
-
-                if (count == 0) {
-
-                    if ((screenData[pos] & 15) == 15) {
-                    	ghosts[i].dx = 0;
-                    	ghosts[i].dx = 0;
-                    } else {
-                    	ghosts[i].dx = -ghosts[i].dx;
-                    	ghosts[i].dy = -ghosts[i].dy;
-                    }
-
-                } else {
-
-                    count = (int) (Math.random() * count);
-
-                    if (count > 3) {
-                        count = 3;
-                    }
-
-                    ghosts[i].dx = dx[count];
-                    ghosts[i].dy = dy[count];
-                }
-
+                ghosts[i].moveGhost(screenData[pos]);
             }
             ghosts[i].updateMovement();
             fixEntityPos(ghosts[i]);
@@ -617,7 +570,7 @@ public class Model extends JPanel implements ActionListener {
             }
 
             //create new ghost with this configuration
-            ghosts[i] = new Entity(startGhost_x*BLOCK_SIZE, startGhost_y*BLOCK_SIZE, 0, dx, validSpeeds[random], urlGhostLeft, urlGhostRight, urlGhostUp, urlGhostDown);
+            ghosts[i] = new Ghost(startGhost_x*BLOCK_SIZE, startGhost_y*BLOCK_SIZE, 0, dx, validSpeeds[random], urlGhostLeft, urlGhostRight, urlGhostUp, urlGhostDown);
             dx = -dx;
         }
         //create new player
