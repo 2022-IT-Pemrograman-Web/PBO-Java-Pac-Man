@@ -26,6 +26,7 @@ public class Model extends JPanel implements ActionListener {
     private final Font smallFont = new Font("Arial", Font.BOLD, 28);
     private final Font gamerFont = FontLoader.getFontFromFile("ARCADECLASSIC", 62f);
     private final Font gamerFontSmall = FontLoader.getFontFromFile("ARCADECLASSIC", 48f);
+    private BackgroundMusic bgm = new BackgroundMusic("bruh.wav");
     //private boolean inGame = false;
     private boolean dying = false;
     private boolean newHighScoreb = false;
@@ -46,7 +47,6 @@ public class Model extends JPanel implements ActionListener {
     private Image[] aboutButton;
     private Image[] exitButton;
     private int selectedButton = 0;
-    private int req_dx, req_dy;
 
 	
     private Player player;
@@ -81,6 +81,8 @@ public class Model extends JPanel implements ActionListener {
         addKeyListener(new TAdapter());
         setFocusable(true);
         initGame();
+
+        bgm.play();
     }
 
     private URL loadImage(String fileName){
@@ -360,7 +362,6 @@ public class Model extends JPanel implements ActionListener {
     private void moveGhosts(Graphics2D g2d) {
 
         int pos;
-        int count;
 
         for (int i = 0; i < N_GHOSTS; i++) {
             if (ghosts[i].x % BLOCK_SIZE == 0 && ghosts[i].y % BLOCK_SIZE == 0) {
@@ -572,8 +573,6 @@ public class Model extends JPanel implements ActionListener {
         }
         System.out.print(String.format("done %d %d\n", start_x, start_y));
         player = new Player(start_x*BLOCK_SIZE, start_y*BLOCK_SIZE, 0, 0, PACMAN_SPEED, urlLeft, urlRight, urlUp, urlDown, lives);
-        req_dx = 0;		// reset direction controls
-        req_dy = 0;
         dying = false;
         System.out.print("DONE continue SIR\n");
     }
@@ -636,7 +635,7 @@ public class Model extends JPanel implements ActionListener {
                     if (key == KeyEvent.VK_ENTER) {
                         if(selectedButton % 3 == 0) {
                             currentState = GameState.inGame;
-                            SoundPlayer.playSound("bruh.wav");
+                            bgm.stop();
                             initGame();
                         }
                         if(selectedButton % 3 == 1){
