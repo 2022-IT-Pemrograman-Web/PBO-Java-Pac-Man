@@ -266,6 +266,7 @@ public class Model extends JPanel implements ActionListener {
              g2d.setColor(Color.yellow);
              g2d.setFont(gamerFontSmall);
             g2d.drawString(newHighScore,(SCREEN_SIZE)/5-100,500);
+            SoundPlayer.playSound("sheesh.wav");
            // newHighScoreb = false;
         }
     }
@@ -648,6 +649,7 @@ public class Model extends JPanel implements ActionListener {
                     }
                 case introScreen:
                     if (key == KeyEvent.VK_ENTER) {
+                        SoundPlayer.playSound("enter.wav");
                         if(selectedButton % 3 == 0) {
                             currentState = GameState.inGame;
                             SoundPlayer.playSound("bruh.wav");
@@ -661,15 +663,18 @@ public class Model extends JPanel implements ActionListener {
                         }
                     }
                     if(key == KeyEvent.VK_ESCAPE) {
+                        SoundPlayer.playSound("esc.wav");
                         System.exit(0);
                     }
                     if (key == KeyEvent.VK_UP) {
+                        SoundPlayer.playSound("topdown.wav");
                         selectedButton--;
                         if(selectedButton < 0) {
                             selectedButton = 2;
                         }
                     }
                     else if(key == KeyEvent.VK_DOWN) {
+                        SoundPlayer.playSound("topdown.wav");
                         selectedButton++;
                         if(selectedButton == 3) {
                             selectedButton = 0;
@@ -677,7 +682,13 @@ public class Model extends JPanel implements ActionListener {
                     }
                     break;
                 case gameOver:
-                    if (key == KeyEvent.VK_ENTER || key == KeyEvent.VK_SPACE) {
+                    if (key == KeyEvent.VK_ENTER) {
+                        SoundPlayer.playSound("enter.wav");
+                        currentState = GameState.introScreen;
+                        initGame();
+                    }
+                    else if(key == KeyEvent.VK_SPACE){
+                        SoundPlayer.playSound("esc.wav");
                         currentState = GameState.introScreen;
                         initGame();
                     }
