@@ -6,9 +6,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -81,6 +86,7 @@ public class Model extends JPanel implements ActionListener {
         addKeyListener(new TAdapter());
         setFocusable(true);
         initGame();
+        SoundPlayer.playContinuousSound("intro.wav");
     }
 
     private URL loadImage(String fileName){
@@ -204,7 +210,7 @@ public class Model extends JPanel implements ActionListener {
     private void showIntroScreen(Graphics2D g2d) {
         Image aboImage,staImage,exiImage;
         //boolean staButton = false, aboButton = false,
-//        String start = "Press SPACE to start";
+        //String start = "Press SPACE to start";
         g2d.setColor(Color.yellow);
         g2d.drawImage(titleImage,SCREEN_SIZE/2 - 266, SCREEN_SIZE/4, 532,96,this);
         if(selectedButton % 3 == 0){
@@ -300,6 +306,7 @@ public class Model extends JPanel implements ActionListener {
 
             score += 50;
             player.increaseLives();
+            SoundPlayer.playSound("levelup.wav");
             lives = player.getLives();
             if (N_GHOSTS < MAX_GHOSTS) {
                 N_GHOSTS++;
@@ -317,9 +324,12 @@ public class Model extends JPanel implements ActionListener {
 
         player.decreaseLives();
         lives = player.getLives();
-
         if (player.getLives() == 0) {
+            SoundPlayer.playSound("death.wav");
             currentState = GameState.gameOver;
+        }
+        else{
+            SoundPlayer.playSound("damaged.wav");
         }
 
         continueLevel();
@@ -404,6 +414,7 @@ public class Model extends JPanel implements ActionListener {
 
             if ((ch & 16) != 0) {
                 screenData[pos] = (short) (ch & 15);
+                SoundPlayer.playSound("eating.wav");
                 score++;
             }
             if(highScore <= score){
