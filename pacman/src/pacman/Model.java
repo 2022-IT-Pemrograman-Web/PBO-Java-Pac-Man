@@ -50,7 +50,10 @@ public class Model extends JPanel implements ActionListener {
     private Image[] startButton;
     private Image[] aboutButton;
     private Image[] exitButton;
-    private int selectedButton = 0;
+    private Image[] continueButton;
+    private Image[] restartButton;
+    private int selectedButtonIntro = 0;
+    private int selectedButtonPause = 0;
     private int req_dx, req_dy;
 
 	private int scoreWeight = 1;
@@ -64,7 +67,8 @@ public class Model extends JPanel implements ActionListener {
         inGame,
         introScreen,
         gameOver,
-        aboutScreen
+        aboutScreen,
+        pauseScreen
     }
 
     private GameState currentState = GameState.introScreen;
@@ -165,11 +169,16 @@ public class Model extends JPanel implements ActionListener {
         URL urlAbout2 = loadImage("About2.png");
         URL urlExit1 = loadImage("Exit1.png");
         URL urlExit2 = loadImage("Exit2.png");
-
+        URL urlContinue1 = loadImage("cont1.png");
+        URL urlContinue2 = loadImage("cont2.png");
+        URL urlRestart1 = loadImage("restart1.png");
+        URL urlRestart2 = loadImage("restart2.png");
         //get images
         startButton = new Image[2];
         aboutButton = new Image[2];
         exitButton = new Image[2];
+        restartButton = new Image[2];
+        continueButton = new Image[2];
 
         heart = new ImageIcon(urlHeart).getImage();
         titleImage = new ImageIcon(urlTitle).getImage();
@@ -179,6 +188,10 @@ public class Model extends JPanel implements ActionListener {
         aboutButton[1] = new ImageIcon(urlAbout2).getImage();
         exitButton[0] = new ImageIcon(urlExit1).getImage();
         exitButton[1] = new ImageIcon(urlExit2).getImage();
+        continueButton[0] = new ImageIcon(urlContinue1).getImage();
+        continueButton[1] = new ImageIcon(urlContinue2).getImage();
+        restartButton[0] = new ImageIcon(urlRestart1).getImage();
+        restartButton[1] = new ImageIcon(urlRestart2).getImage();
     }
     private void initVariables() {
 
@@ -213,12 +226,12 @@ public class Model extends JPanel implements ActionListener {
         //String start = "Press SPACE to start";
         g2d.setColor(Color.yellow);
         g2d.drawImage(titleImage,SCREEN_SIZE/2 - 266, SCREEN_SIZE/4, 532,96,this);
-        if(selectedButton % 3 == 0){
+        if(selectedButtonIntro % 3 == 0){
             staImage = startButton[1];
             aboImage = aboutButton[0];
             exiImage = exitButton[0];
         }
-        else if(selectedButton % 3 == 1) {
+        else if(selectedButtonIntro % 3 == 1) {
             staImage = startButton[0];
             aboImage = aboutButton[1];
             exiImage = exitButton[0];
@@ -234,7 +247,33 @@ public class Model extends JPanel implements ActionListener {
         //g2d.drawString(start, (SCREEN_SIZE)/4, 150);
     }
 
-
+    private void showPauseScreen(Graphics2D g2d) {
+        Image conImage,resImage,exiImage;
+        //boolean ExiButton = false, resButton = false;
+        g2d.setColor(Color.yellow);
+        String pauseString = "Paused";
+        g2d.setFont(gamerFont);
+        g2d.drawString(pauseString, (SCREEN_SIZE)/2 - 100, 300);
+        if(selectedButtonPause % 3 == 0){
+            conImage = continueButton[1];
+            resImage = restartButton[0];
+            exiImage = exitButton[0];
+        }
+        else if(selectedButtonPause % 3 == 1) {
+            conImage = continueButton[0];
+            resImage = restartButton[1];
+            exiImage = exitButton[0];
+        }
+        else {
+            conImage = continueButton[0];
+            resImage = restartButton[0];
+            exiImage = exitButton[1];
+        }
+        g2d.drawImage(conImage,SCREEN_SIZE/2 - 130, SCREEN_SIZE/2, 574 ,96,this);
+        g2d.drawImage(resImage,SCREEN_SIZE/2 - 130, SCREEN_SIZE/2 + 96, 574,96,this);
+        g2d.drawImage(exiImage,SCREEN_SIZE/2 - 130, SCREEN_SIZE/2 + 192, 574,96,this);
+        //g2d.drawString(start, (SCREEN_SIZE)/4, 150);
+    }
     private void showAboutScreen(Graphics2D g2d) {
         Font smallGamerFont = FontLoader.getFontFromFile("ARCADECLASSIC", 32f);
         String aboutText = "NORMAL PACMAN!";
@@ -615,6 +654,9 @@ public class Model extends JPanel implements ActionListener {
             case introScreen:
                 showIntroScreen(g2d);
                 break;
+            case pauseScreen:
+                showPauseScreen(g2d);
+                break;
             case gameOver:
                 showGameOverScreen(g2d);
                 break;
@@ -640,25 +682,33 @@ public class Model extends JPanel implements ActionListener {
                             currentState = GameState.introScreen;
                         }
                     }
+                    if(key == KeyEvent.VK_ESCAPE){
+                        currentState = GameState.pauseScreen;
+                    }
                     break;
                 case aboutScreen:
                     if(key == KeyEvent.VK_ENTER) {
-                        selectedButton = 0;
+                        selectedButtonIntro = 0;
                         currentState = GameState.introScreen;
                         repaint();
                     }
+                    if(key == KeyEvent.VK_ESCAPE){
+                        selectedButtonIntro = 0;
+                        currentState =GameState.introScreen;
+                    }
+                    break;
                 case introScreen:
                     if (key == KeyEvent.VK_ENTER) {
                         SoundPlayer.playSound("enter.wav");
-                        if(selectedButton % 3 == 0) {
+                        if(selectedButtonIntro % 3 == 0) {
                             currentState = GameState.inGame;
                             SoundPlayer.playSound("bruh.wav");
                             initGame();
                         }
-                        if(selectedButton % 3 == 1){
+                        if(selectedButtonIntro % 3 == 1){
                             currentState = GameState.aboutScreen;
                         }
-                        if(selectedButton % 3 == 2){
+                        if(selectedButtonIntro % 3 == 2){
                             System.exit(0);
                         }
                     }
@@ -668,16 +718,49 @@ public class Model extends JPanel implements ActionListener {
                     }
                     if (key == KeyEvent.VK_UP) {
                         SoundPlayer.playSound("topdown.wav");
-                        selectedButton--;
-                        if(selectedButton < 0) {
-                            selectedButton = 2;
+                        selectedButtonIntro--;
+                        if(selectedButtonIntro < 0) {
+                            selectedButtonIntro = 2;
                         }
                     }
                     else if(key == KeyEvent.VK_DOWN) {
                         SoundPlayer.playSound("topdown.wav");
-                        selectedButton++;
-                        if(selectedButton == 3) {
-                            selectedButton = 0;
+                        selectedButtonIntro++;
+                        if(selectedButtonIntro == 3) {
+                            selectedButtonIntro = 0;
+                        }
+                    }
+                    break;
+                case pauseScreen:
+                    if (key == KeyEvent.VK_ENTER) {
+                        SoundPlayer.playSound("enter.wav");
+                        if(selectedButtonPause % 3 == 0) {
+                            currentState = GameState.inGame;
+                        }
+                        if(selectedButtonPause % 3 == 1){
+                            currentState = GameState.inGame;
+                            initGame();
+                        }
+                        if(selectedButtonPause % 3 == 2){
+                            System.exit(0);
+                        }
+                    }
+                    if(key == KeyEvent.VK_ESCAPE) {
+                        SoundPlayer.playSound("esc.wav");
+                        System.exit(0);
+                    }
+                    if (key == KeyEvent.VK_UP) {
+                        SoundPlayer.playSound("topdown.wav");
+                        selectedButtonPause--;
+                        if(selectedButtonPause < 0) {
+                            selectedButtonPause = 2;
+                        }
+                    }
+                    else if(key == KeyEvent.VK_DOWN) {
+                        SoundPlayer.playSound("topdown.wav");
+                        selectedButtonPause++;
+                        if(selectedButtonPause == 3) {
+                            selectedButtonPause = 0;
                         }
                     }
                     break;
