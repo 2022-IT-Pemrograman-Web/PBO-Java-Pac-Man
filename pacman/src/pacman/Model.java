@@ -393,16 +393,16 @@ public class Model extends JPanel implements ActionListener {
 
     private void fixEntityPos(Entity en){
         if(en.y > 672) {
-            en.y = 672;
+            en.y = 0;
         }
         if(en.x > 672){
-            en.x = 672;
-        }
-        if(en.x < 0){
             en.x = 0;
         }
+        if(en.x < 0){
+            en.x = 672;
+        }
         if(en.y < 0){
-            en.y = 0;
+            en.y = 672;
         }
     }
 
