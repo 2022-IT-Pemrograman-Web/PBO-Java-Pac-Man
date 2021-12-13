@@ -12,6 +12,21 @@ public class Ghost extends Entity{
         dy_ = new int[4];
     }
 
+    public boolean detectPlayerCollision(Player pacman){
+        if(pacman != null){
+            System.out.println("Ghos");
+            System.out.println(x + " " +y);
+            System.out.println("Pac");
+            System.out.println(pacman.x + " " + pacman.y);
+            return pacman.x > (x - 24) && pacman.x < (x + 24)
+                    && pacman.y > (y - 24) && pacman.y < (y + 24);
+        }
+        else{
+            System.out.println("Player object null!");
+        }
+        return false;
+    }
+
     public int getScreenPos(int gridSize, int gridN){
         return x/gridSize + gridN * (y/gridSize);
     }

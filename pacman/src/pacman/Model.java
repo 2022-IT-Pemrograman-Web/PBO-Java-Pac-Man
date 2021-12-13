@@ -377,9 +377,7 @@ public class Model extends JPanel implements ActionListener {
 
     private void detectDeath(int id) {
     	//detect if pacman close to ghost with index id
-        if (player.x > (ghosts[id].x - 24) && player.x < (ghosts[id].x + 24)
-                && player.y > (ghosts[id].y - 24) && player.y < (ghosts[id].y + 24)
-                && currentState == GameState.inGame) {
+        if (ghosts[id].detectPlayerCollision(player) && currentState == GameState.inGame) {
             dying = true;
 //            System.out.print("KENAK GHOST SIR\n");
         }
@@ -533,7 +531,7 @@ public class Model extends JPanel implements ActionListener {
     private void powerUpLogic(Graphics2D g2d){
         //cek spawn
         if(score % 250 == 0 & score > 0){
-            //spawn the poweup
+            //spawn the power up
             int powerKind = numGenerator.nextInt(2);
             switch (powerKind) {
                 case 0 :
