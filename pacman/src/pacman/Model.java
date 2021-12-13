@@ -31,7 +31,7 @@ public class Model extends JPanel implements ActionListener {
     private final Font smallFont = new Font("Arial", Font.BOLD, 28);
     private final Font gamerFont = FontLoader.getFontFromFile("ARCADECLASSIC", 62f);
     private final Font gamerFontSmall = FontLoader.getFontFromFile("ARCADECLASSIC", 48f);
-    //private boolean inGame = false;
+    private SoundPlayer highScoreSound = new SoundPlayer("sheesh.wav");
     private boolean dying = false;
     private boolean newHighScoreb = false;
     private final int BLOCK_SIZE = 48;
@@ -302,11 +302,11 @@ public class Model extends JPanel implements ActionListener {
         g2d.drawString(scoreString, (SCREEN_SIZE)/5, 400);
         if(newHighScoreb){
             System.out.print("JALAN\n");
-             g2d.setColor(Color.yellow);
-             g2d.setFont(gamerFontSmall);
+            g2d.setColor(Color.yellow);
+            g2d.setFont(gamerFontSmall);
             g2d.drawString(newHighScore,(SCREEN_SIZE)/5-100,500);
-            SoundPlayer.playSound("sheesh.wav");
-           // newHighScoreb = false;
+            highScoreSound.playSoundOnce();
+            //newHighScoreb = false;
         }
     }
 

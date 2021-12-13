@@ -14,6 +14,7 @@ public class Player extends Entity{
     private int lives;
     public Direction isFacing;
     public Direction bufferedDirection;
+    public boolean canEatGhosts;
 
     public Player(int x, int y, int dx, int dy, int speed, URL urlLeft, URL urlRight, URL urlUp, URL urlDown, int lives) {
         super(x, y, dx, dy, speed, urlLeft, urlRight, urlUp, urlDown);

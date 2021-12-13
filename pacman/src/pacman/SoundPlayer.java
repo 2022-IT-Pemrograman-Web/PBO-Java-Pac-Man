@@ -7,6 +7,21 @@ import java.io.BufferedInputStream;
 import java.io.InputStream;
 
 public class SoundPlayer {
+
+    private Clip audioClip;
+
+    public SoundPlayer(String url){
+        try {
+            audioClip = AudioSystem.getClip();
+            InputStream audioSrc = getClass().getResourceAsStream("/audio/" + url);
+            InputStream bufferedIn = new BufferedInputStream(audioSrc);
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(bufferedIn);
+            audioClip.open(audioStream);
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
+    }
+
     public static synchronized void playSound(final String url) {
         new Thread(new Runnable() {
             // The wrapper thread is unnecessary, unless it blocks on the
@@ -27,6 +42,15 @@ public class SoundPlayer {
                 }
             }
         }).start();
+    }
+
+    //this method plays the file until the clip finishes
+    public void playSound(){
+        audioClip.loop(1);
+    }
+
+    public void playSoundOnce(){
+        audioClip.start();
     }
     public static synchronized void playContinuousSound(final String url){
         new Thread(new Runnable() {
