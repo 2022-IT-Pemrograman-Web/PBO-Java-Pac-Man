@@ -10,14 +10,11 @@ public class Ghost extends Entity{
         super(x,y,dx,dy,speed,urlLeft,urlRight,urlUp,urlDown);
         dx_ = new int[4];
         dy_ = new int[4];
+        isFacing = Direction.LEFT;
     }
 
     public boolean detectPlayerCollision(Player pacman){
         if(pacman != null){
-            System.out.println("Ghos");
-            System.out.println(x + " " +y);
-            System.out.println("Pac");
-            System.out.println(pacman.x + " " + pacman.y);
             return pacman.x > (x - 24) && pacman.x < (x + 24)
                     && pacman.y > (y - 24) && pacman.y < (y + 24);
         }
@@ -81,5 +78,11 @@ public class Ghost extends Entity{
             dx = dx_[count];
             dy = dy_[count];
         }
+
+        //update ghost facing direction
+        if(dx < 0) isFacing = Direction.LEFT;
+        if(dx > 0) isFacing = Direction.RIGHT;
+        if(dy < 0) isFacing = Direction.UP;
+        if(dy > 0) isFacing = Direction.DOWN;
     }
 }

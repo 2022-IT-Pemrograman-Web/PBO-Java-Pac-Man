@@ -4,15 +4,7 @@ import java.awt.event.KeyEvent;
 import java.net.URL;
 
 public class Player extends Entity{
-    static enum Direction{
-        UP,
-        DOWN,
-        LEFT,
-        RIGHT,
-        NEUTRAL
-    }
     private int lives;
-    public Direction isFacing;
     public Direction bufferedDirection;
     public boolean canEatGhosts;
 

@@ -6,14 +6,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -54,7 +49,6 @@ public class Model extends JPanel implements ActionListener {
     private Image[] restartButton;
     private int selectedButtonIntro = 0;
     private int selectedButtonPause = 0;
-    private int req_dx, req_dy;
 
 	private int scoreWeight = 1;
     private Player player;
@@ -143,7 +137,6 @@ public class Model extends JPanel implements ActionListener {
             String otp = Integer.toString(highScore);
             myWriter.write(otp);
             myWriter.close();
-          //  System.out.println("Successfully wrote to the file." + highScore);
         } catch (IOException e) {
             System.out.println("An error on update high score occurred.");
             e.printStackTrace();
@@ -208,7 +201,6 @@ public class Model extends JPanel implements ActionListener {
     private void playGame(Graphics2D g2d) {
 
         if (dying) {
-//            System.out.print("bangka SIR\n");
             death();
 
         } else {
@@ -222,8 +214,6 @@ public class Model extends JPanel implements ActionListener {
 
     private void showIntroScreen(Graphics2D g2d) {
         Image aboImage,staImage,exiImage;
-        //boolean staButton = false, aboButton = false,
-        //String start = "Press SPACE to start";
         g2d.setColor(Color.yellow);
         g2d.drawImage(titleImage,SCREEN_SIZE/2 - 266, SCREEN_SIZE/4, 532,96,this);
         if(selectedButtonIntro % 3 == 0){
@@ -244,12 +234,10 @@ public class Model extends JPanel implements ActionListener {
         g2d.drawImage(staImage,SCREEN_SIZE/2 - 130, SCREEN_SIZE/2, 574 ,96,this);
         g2d.drawImage(aboImage,SCREEN_SIZE/2 - 130, SCREEN_SIZE/2 + 96, 574,96,this);
         g2d.drawImage(exiImage,SCREEN_SIZE/2 - 130, SCREEN_SIZE/2 + 192, 574,96,this);
-        //g2d.drawString(start, (SCREEN_SIZE)/4, 150);
     }
 
     private void showPauseScreen(Graphics2D g2d) {
         Image conImage,resImage,exiImage;
-        //boolean ExiButton = false, resButton = false;
         g2d.setColor(Color.yellow);
         String pauseString = "Paused";
         g2d.setFont(gamerFont);
@@ -272,7 +260,6 @@ public class Model extends JPanel implements ActionListener {
         g2d.drawImage(conImage,SCREEN_SIZE/2 - 130, SCREEN_SIZE/2, 574 ,96,this);
         g2d.drawImage(resImage,SCREEN_SIZE/2 - 130, SCREEN_SIZE/2 + 96, 574,96,this);
         g2d.drawImage(exiImage,SCREEN_SIZE/2 - 130, SCREEN_SIZE/2 + 192, 574,96,this);
-        //g2d.drawString(start, (SCREEN_SIZE)/4, 150);
     }
     private void showAboutScreen(Graphics2D g2d) {
         Font smallGamerFont = FontLoader.getFontFromFile("ARCADECLASSIC", 32f);
@@ -306,7 +293,6 @@ public class Model extends JPanel implements ActionListener {
             g2d.setFont(gamerFontSmall);
             g2d.drawString(newHighScore,(SCREEN_SIZE)/5-100,500);
             highScoreSound.playSoundOnce();
-            //newHighScoreb = false;
         }
     }
 
@@ -379,12 +365,11 @@ public class Model extends JPanel implements ActionListener {
     	//detect if pacman close to ghost with index id
         if (ghosts[id].detectPlayerCollision(player) && currentState == GameState.inGame) {
             dying = true;
-//            System.out.print("KENAK GHOST SIR\n");
         }
     }
     
-    private void drawEntity(Graphics2D g2d, int direction, Entity en) {
-    	g2d.drawImage(en.imgs[direction], en.x + 2, en.y + 2, this);
+    private void drawEntity(Graphics2D g2d, Entity en) {
+    	g2d.drawImage(en.getCurrentImage(), en.x + 2, en.y + 2, this);
     }
 
     private void drawPowerUp(Graphics2D g2d, PowerUp pu){
@@ -409,7 +394,6 @@ public class Model extends JPanel implements ActionListener {
     private void moveGhosts(Graphics2D g2d) {
 
         int pos;
-        int count;
 
         for (int i = 0; i < N_GHOSTS; i++) {
             if (ghosts[i].x % BLOCK_SIZE == 0 && ghosts[i].y % BLOCK_SIZE == 0) {
@@ -427,18 +411,7 @@ public class Model extends JPanel implements ActionListener {
     }
 
     private void drawGhost(Graphics2D g2d, int id) {
-    	int direction;
-        if (ghosts[id].dx == -1) {
-        	//draw player with image on index 0 a.k.a left
-        	direction = 0;
-        } else if (ghosts[id].dx == 1) {
-        	direction = 1;
-        } else if (ghosts[id].dy == -1) {
-        	direction = 2;
-        } else {
-        	direction = 3;
-        }
-        drawEntity(g2d, direction, ghosts[id]);
+        drawEntity(g2d,ghosts[id]);
     }
 
     private void movePacman() {
@@ -470,23 +443,7 @@ public class Model extends JPanel implements ActionListener {
     }
 
     private void drawPacman(Graphics2D g2d) {
-    	Player.Direction pFacing = player.isFacing;
-        int direction;
-        switch (pFacing){
-            case LEFT:
-                direction = 0;
-                break;
-            case RIGHT:
-                direction = 1;
-                break;
-            case UP:
-                direction = 2;
-                break;
-            default:
-                direction = 3;
-                break;
-        }
-        drawEntity(g2d, direction, player);
+        drawEntity(g2d, player);
     }
 
     private void drawMaze(Graphics2D g2d) {
@@ -566,7 +523,6 @@ public class Model extends JPanel implements ActionListener {
                 drawPowerUp(g2d, powerList.get(i));
             }
         }
-//        System.out.print("DONE POWER UP SIR\n");
     }
 
     private void initGame() {
@@ -586,7 +542,6 @@ public class Model extends JPanel implements ActionListener {
         for (i = 0; i < N_BLOCKS * N_BLOCKS; i++) {
             screenData[i] = levelData[i];
         }
-//        System.out.print("DONE init SIR\n");
         continueLevel();
     }
 
@@ -601,7 +556,6 @@ public class Model extends JPanel implements ActionListener {
             ghostOneDimensionPos = startGhost_x + startGhost_y*N_BLOCKS;
 
         }
-//        System.out.print(String.format("go %d %d\n", startGhost_x, startGhost_y));
         for (int i = 0; i < N_GHOSTS; i++) {
             random = (int) (Math.random() * (currentSpeed + 1));
 
@@ -621,13 +575,9 @@ public class Model extends JPanel implements ActionListener {
             start_x = numGenerator.nextInt(15); start_y = numGenerator.nextInt(15);
             oneDimensionPos = start_x + start_y*N_BLOCKS;
         }
-//        System.out.print(String.format("done %d %d\n", start_x, start_y));
         player = new Player(start_x*BLOCK_SIZE, start_y*BLOCK_SIZE, 0, 0, PACMAN_SPEED, urlLeft, urlRight, urlUp, urlDown, lives);
-        req_dx = 0;		// reset direction controls
-        req_dy = 0;
         dying = false;
         scoreWeight = 1;
-//        System.out.print("DONE continue SIR\n");
     }
 
 
