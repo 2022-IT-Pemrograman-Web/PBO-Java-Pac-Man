@@ -202,8 +202,8 @@ public class Model extends JPanel implements ActionListener {
 
         if (dying) {
             death();
-
-        } else {
+        }
+        else {
             movePacman();
             powerUpLogic(g2d);
             drawPacman(g2d);
@@ -396,12 +396,14 @@ public class Model extends JPanel implements ActionListener {
         int pos;
 
         for (int i = 0; i < N_GHOSTS; i++) {
-            if (ghosts[i].x % BLOCK_SIZE == 0 && ghosts[i].y % BLOCK_SIZE == 0) {
-                pos = ghosts[i].getScreenPos(BLOCK_SIZE, N_BLOCKS);
+            if(player.isFacing != Entity.Direction.NEUTRAL) {
+                if (ghosts[i].x % BLOCK_SIZE == 0 && ghosts[i].y % BLOCK_SIZE == 0) {
+                    pos = ghosts[i].getScreenPos(BLOCK_SIZE, N_BLOCKS);
 
-                ghosts[i].moveGhost(screenData[pos]);
+                    ghosts[i].moveGhost(screenData[pos]);
+                }
+                ghosts[i].updateMovement();
             }
-            ghosts[i].updateMovement();
             fixEntityPos(ghosts[i]);
             drawGhost(g2d, i);
             
