@@ -53,7 +53,7 @@ public class Model extends JPanel implements ActionListener {
     private int selectedButton = 0;
     private int req_dx, req_dy;
 
-	
+	private int scoreWeight = 1;
     private Player player;
     private int lives;
     private Ghost[] ghosts;
@@ -195,7 +195,7 @@ public class Model extends JPanel implements ActionListener {
     private void playGame(Graphics2D g2d) {
 
         if (dying) {
-            System.out.print("bangka SIR\n");
+//            System.out.print("bangka SIR\n");
             death();
 
         } else {
@@ -266,6 +266,7 @@ public class Model extends JPanel implements ActionListener {
              g2d.setColor(Color.yellow);
              g2d.setFont(gamerFontSmall);
             g2d.drawString(newHighScore,(SCREEN_SIZE)/5-100,500);
+            SoundPlayer.playSound("sheesh.wav");
            // newHighScoreb = false;
         }
     }
@@ -341,7 +342,7 @@ public class Model extends JPanel implements ActionListener {
                 && player.y > (ghosts[id].y - 24) && player.y < (ghosts[id].y + 24)
                 && currentState == GameState.inGame) {
             dying = true;
-            System.out.print("KENAK GHOST SIR\n");
+//            System.out.print("KENAK GHOST SIR\n");
         }
     }
     
@@ -415,7 +416,7 @@ public class Model extends JPanel implements ActionListener {
             if ((ch & 16) != 0) {
                 screenData[pos] = (short) (ch & 15);
                 SoundPlayer.playSound("eating.wav");
-                score++;
+                score+=scoreWeight;
             }
             if(highScore <= score){
                 highScore = score;
@@ -500,10 +501,10 @@ public class Model extends JPanel implements ActionListener {
                     powerList.add(new HeartPower(ghosts[0].x, ghosts[0].y, urlHeart));
                     break;
                 case 1 :
-                    powerList.add(new DoubleSpeedPower(ghosts[0].x, ghosts[0].y, loadImage("thunder.gif")));
+                    powerList.add(new ScoreWeightPower(ghosts[0].x, ghosts[0].y, loadImage("thunder.gif")));
                     break;
             }
-            score+=1;
+            score+=scoreWeight;
         }
 
         if(!powerList.isEmpty()){
@@ -515,8 +516,9 @@ public class Model extends JPanel implements ActionListener {
                     if(curPower instanceof HeartPower){
                         curPower.activatePower(player);
                     }
-                    if(curPower instanceof DoubleSpeedPower){
-                        curPower.activatePower(player);
+                    if(curPower instanceof ScoreWeightPower){
+                        scoreWeight = curPower.activatePower(scoreWeight);
+                        System.out.println(scoreWeight);
                     }
                     powerList.remove(i);
                 }
@@ -547,7 +549,7 @@ public class Model extends JPanel implements ActionListener {
         for (i = 0; i < N_BLOCKS * N_BLOCKS; i++) {
             screenData[i] = levelData[i];
         }
-        System.out.print("DONE init SIR\n");
+//        System.out.print("DONE init SIR\n");
         continueLevel();
     }
 
@@ -562,7 +564,7 @@ public class Model extends JPanel implements ActionListener {
             ghostOneDimensionPos = startGhost_x + startGhost_y*N_BLOCKS;
 
         }
-        System.out.print(String.format("go %d %d\n", startGhost_x, startGhost_y));
+//        System.out.print(String.format("go %d %d\n", startGhost_x, startGhost_y));
         for (int i = 0; i < N_GHOSTS; i++) {
             random = (int) (Math.random() * (currentSpeed + 1));
 
@@ -582,12 +584,13 @@ public class Model extends JPanel implements ActionListener {
             start_x = numGenerator.nextInt(15); start_y = numGenerator.nextInt(15);
             oneDimensionPos = start_x + start_y*N_BLOCKS;
         }
-        System.out.print(String.format("done %d %d\n", start_x, start_y));
+//        System.out.print(String.format("done %d %d\n", start_x, start_y));
         player = new Player(start_x*BLOCK_SIZE, start_y*BLOCK_SIZE, 0, 0, PACMAN_SPEED, urlLeft, urlRight, urlUp, urlDown, lives);
         req_dx = 0;		// reset direction controls
         req_dy = 0;
         dying = false;
-        System.out.print("DONE continue SIR\n");
+        scoreWeight = 1;
+//        System.out.print("DONE continue SIR\n");
     }
 
 
@@ -646,6 +649,7 @@ public class Model extends JPanel implements ActionListener {
                     }
                 case introScreen:
                     if (key == KeyEvent.VK_ENTER) {
+                        SoundPlayer.playSound("enter.wav");
                         if(selectedButton % 3 == 0) {
                             currentState = GameState.inGame;
                             SoundPlayer.playSound("bruh.wav");
@@ -659,15 +663,18 @@ public class Model extends JPanel implements ActionListener {
                         }
                     }
                     if(key == KeyEvent.VK_ESCAPE) {
+                        SoundPlayer.playSound("esc.wav");
                         System.exit(0);
                     }
                     if (key == KeyEvent.VK_UP) {
+                        SoundPlayer.playSound("topdown.wav");
                         selectedButton--;
                         if(selectedButton < 0) {
                             selectedButton = 2;
                         }
                     }
                     else if(key == KeyEvent.VK_DOWN) {
+                        SoundPlayer.playSound("topdown.wav");
                         selectedButton++;
                         if(selectedButton == 3) {
                             selectedButton = 0;
@@ -675,7 +682,13 @@ public class Model extends JPanel implements ActionListener {
                     }
                     break;
                 case gameOver:
-                    if (key == KeyEvent.VK_ENTER || key == KeyEvent.VK_SPACE) {
+                    if (key == KeyEvent.VK_ENTER) {
+                        SoundPlayer.playSound("enter.wav");
+                        currentState = GameState.introScreen;
+                        initGame();
+                    }
+                    else if(key == KeyEvent.VK_SPACE){
+                        SoundPlayer.playSound("esc.wav");
                         currentState = GameState.introScreen;
                         initGame();
                     }
