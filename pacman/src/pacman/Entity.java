@@ -42,16 +42,12 @@ public class Entity extends GameObject{
 
 	
 	//constructor
-	public Entity(int x, int y, int dx, int dy, int speed, URL urlLeft, URL urlRight, URL urlUp, URL urlDown) {
+	public Entity(int x, int y, int dx, int dy, int speed) {
 		//set / initialize the position direction, speed, and images
 		super(x, y);
 		this.dx = dx;
 		this.dy = dy;
 		this.speed = speed;
-		this.imgs[0] = new ImageIcon(urlLeft).getImage();
-		this.imgs[1] = new ImageIcon(urlRight).getImage();
-		this.imgs[2] = new ImageIcon(urlUp).getImage();
-		this.imgs[3] = new ImageIcon(urlDown).getImage();
 	}
 	
 	//every entity has an update movement
