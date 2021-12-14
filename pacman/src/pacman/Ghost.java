@@ -1,16 +1,46 @@
 package pacman;
 
+import javax.swing.*;import java.awt.*;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.io.IOException;
 import java.net.URL;
+
+import javax.swing.ImageIcon;
+import javax.swing.JPanel;
+import javax.swing.Timer;
+
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Random;
+import java.util.Scanner;
+import java.io.FileWriter;
+import java.util.Vector;
+
 
 public class Ghost extends Entity{
 
+    private URL loadImage(String fileName){
+        return getClass().getResource("/images/" + fileName);
+    }
+    private URL urlGhostLeft = loadImage("ghostLeft.gif");
+    private URL urlGhostRight = loadImage("ghostRight.gif");
+    private URL urlGhostUp = loadImage("ghostUp.gif");
+    private URL urlGhostDown = loadImage("ghostDown.gif");
     int[] dy_,dx_;
 
-    public Ghost(int x, int y, int dx, int dy, int speed, URL urlLeft, URL urlRight, URL urlUp, URL urlDown){
-        super(x,y,dx,dy,speed,urlLeft,urlRight,urlUp,urlDown);
+    public Ghost(int x, int y, int dx, int dy, int speed){
+        super(x,y,dx,dy,speed);
         dx_ = new int[4];
         dy_ = new int[4];
         isFacing = Direction.LEFT;
+        this.imgs[0] = new ImageIcon(urlGhostLeft).getImage();
+        this.imgs[1] = new ImageIcon(urlGhostRight).getImage();
+        this.imgs[2] = new ImageIcon(urlGhostUp).getImage();
+        this.imgs[3] = new ImageIcon(urlGhostDown).getImage();
     }
 
     public boolean detectPlayerCollision(Player pacman){
