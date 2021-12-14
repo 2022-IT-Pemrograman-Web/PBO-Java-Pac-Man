@@ -503,10 +503,12 @@ public class Model extends JPanel implements ActionListener {
                 if(curPower.isCollided(player)){
                     if(curPower instanceof HeartPower){
                         curPower.activatePower(player);
+                        SoundPlayer.playSound("addlives.wav");
                     }
                     if(curPower instanceof ScoreWeightPower){
                         scoreWeight = curPower.activatePower(scoreWeight);
                         System.out.println(scoreWeight);
+                        SoundPlayer.playSound("bonuspoint.wav");
                     }
                     powerList.remove(i);
                 }
@@ -625,6 +627,7 @@ public class Model extends JPanel implements ActionListener {
                         }
                     }
                     if(key == KeyEvent.VK_ESCAPE){
+                        SoundPlayer.playSound("esc.wav");
                         currentState = GameState.pauseScreen;
                     }
                     break;
@@ -635,6 +638,7 @@ public class Model extends JPanel implements ActionListener {
                         repaint();
                     }
                     if(key == KeyEvent.VK_ESCAPE){
+                        SoundPlayer.playSound("esc.wav");
                         selectedButtonIntro = 0;
                         currentState =GameState.introScreen;
                     }
@@ -688,6 +692,7 @@ public class Model extends JPanel implements ActionListener {
                         }
                     }
                     if (key == KeyEvent.VK_ESCAPE){
+                        SoundPlayer.playSound("esc.wav");
                         currentState = GameState.inGame;
                     }
                     if (key == KeyEvent.VK_UP) {
