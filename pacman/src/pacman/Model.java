@@ -47,6 +47,7 @@ public class Model extends JPanel implements ActionListener {
     private Image[] exitButton;
     private Image[] continueButton;
     private Image[] restartButton;
+    private Image[] menuButton;
     private int selectedButtonIntro = 0;
     private int selectedButtonPause = 0;
 
@@ -84,7 +85,7 @@ public class Model extends JPanel implements ActionListener {
         addKeyListener(new TAdapter());
         setFocusable(true);
         initGame();
-        SoundPlayer.playContinuousSound("intro.wav");
+        SoundPlayer.playContinuousSound("intro2.wav");
     }
 
     private URL loadImage(String fileName){
@@ -158,12 +159,15 @@ public class Model extends JPanel implements ActionListener {
         URL urlContinue2 = loadImage("cont2.png");
         URL urlRestart1 = loadImage("restart1.png");
         URL urlRestart2 = loadImage("restart2.png");
+        URL urlMenu1 = loadImage("menu1.png");
+        URL urlMenu2 = loadImage("menu2.png");
         //get images
         startButton = new Image[2];
         aboutButton = new Image[2];
         exitButton = new Image[2];
         restartButton = new Image[2];
         continueButton = new Image[2];
+        menuButton = new Image[2];
 
         heart = new ImageIcon(urlHeart).getImage();
         titleImage = new ImageIcon(urlTitle).getImage();
@@ -177,6 +181,8 @@ public class Model extends JPanel implements ActionListener {
         continueButton[1] = new ImageIcon(urlContinue2).getImage();
         restartButton[0] = new ImageIcon(urlRestart1).getImage();
         restartButton[1] = new ImageIcon(urlRestart2).getImage();
+        menuButton[0] = new ImageIcon(urlMenu1).getImage();
+        menuButton[1] = new ImageIcon(urlMenu2).getImage();
     }
     private void initVariables() {
 
@@ -229,7 +235,7 @@ public class Model extends JPanel implements ActionListener {
     }
 
     private void showPauseScreen(Graphics2D g2d) {
-        Image conImage,resImage,exiImage;
+        Image conImage,resImage,menImage;
         g2d.setColor(Color.yellow);
         String pauseString = "Paused";
         g2d.setFont(gamerFont);
@@ -237,21 +243,21 @@ public class Model extends JPanel implements ActionListener {
         if(selectedButtonPause % 3 == 0){
             conImage = continueButton[1];
             resImage = restartButton[0];
-            exiImage = exitButton[0];
+            menImage = menuButton[0];
         }
         else if(selectedButtonPause % 3 == 1) {
             conImage = continueButton[0];
             resImage = restartButton[1];
-            exiImage = exitButton[0];
+            menImage = menuButton[0];
         }
         else {
             conImage = continueButton[0];
             resImage = restartButton[0];
-            exiImage = exitButton[1];
+            menImage = menuButton[1];
         }
         g2d.drawImage(conImage,SCREEN_SIZE/2 - 130, SCREEN_SIZE/2, 574 ,96,this);
         g2d.drawImage(resImage,SCREEN_SIZE/2 - 130, SCREEN_SIZE/2 + 96, 574,96,this);
-        g2d.drawImage(exiImage,SCREEN_SIZE/2 - 130, SCREEN_SIZE/2 + 192, 574,96,this);
+        g2d.drawImage(menImage,SCREEN_SIZE/2 - 130, SCREEN_SIZE/2 + 192, 574,96,this);
     }
     private void showAboutScreen(Graphics2D g2d) {
         Font smallGamerFont = FontLoader.getFontFromFile("ARCADECLASSIC", 32f);
@@ -688,7 +694,7 @@ public class Model extends JPanel implements ActionListener {
                             initGame();
                         }
                         if(selectedButtonPause % 3 == 2){
-                            System.exit(0);
+                            currentState = GameState.introScreen;
                         }
                     }
                     if (key == KeyEvent.VK_ESCAPE){
