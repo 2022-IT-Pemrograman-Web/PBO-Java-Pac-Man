@@ -1,17 +1,29 @@
 package pacman;
 
+import javax.swing.*;
 import java.awt.event.KeyEvent;
 import java.net.URL;
 
 public class Player extends Entity{
+    private URL loadImage(String fileName){
+        return getClass().getResource("/images/" + fileName);
+    }
+    private URL urlDown = loadImage("down.gif");
+    private URL urlUp = loadImage("up.gif");
+    private URL urlLeft = loadImage("left.gif");
+    private URL urlRight = loadImage("right.gif");
     private int lives;
     public Direction bufferedDirection;
     public boolean canEatGhosts;
 
-    public Player(int x, int y, int dx, int dy, int speed, URL urlLeft, URL urlRight, URL urlUp, URL urlDown, int lives) {
-        super(x, y, dx, dy, speed, urlLeft, urlRight, urlUp, urlDown);
+    public Player(int x, int y, int dx, int dy, int speed, int lives) {
+        super(x, y, dx, dy, speed);
         this.lives = lives;
         bufferedDirection = isFacing = Direction.NEUTRAL;
+        this.imgs[0] = new ImageIcon(urlLeft).getImage();
+        this.imgs[1] = new ImageIcon(urlRight).getImage();
+        this.imgs[2] = new ImageIcon(urlUp).getImage();
+        this.imgs[3] = new ImageIcon(urlDown).getImage();
     }
 
     public boolean getInput(int key){
