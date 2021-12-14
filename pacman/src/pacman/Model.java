@@ -42,6 +42,7 @@ public class Model extends JPanel implements ActionListener {
     private URL urlHeart;
     private Image heart;
     private Image titleImage;
+    private Image ghostEyes;
     private Image[] startButton;
     private Image[] aboutButton;
     private Image[] exitButton;
@@ -149,6 +150,7 @@ public class Model extends JPanel implements ActionListener {
         //load url
         URL urlTitle = loadImage("title.png");
         urlHeart = loadImage("heart.png");
+        URL urlEyes = loadImage("ghostEyes.png");
         URL urlStart1 = loadImage("Start1.png");
         URL urlStart2 = loadImage("Start2.png");
         URL urlAbout1 = loadImage("About1.png");
@@ -169,6 +171,7 @@ public class Model extends JPanel implements ActionListener {
         continueButton = new Image[2];
         menuButton = new Image[2];
 
+        ghostEyes = new ImageIcon(urlEyes).getImage();
         heart = new ImageIcon(urlHeart).getImage();
         titleImage = new ImageIcon(urlTitle).getImage();
         startButton[0] = new ImageIcon(urlStart1).getImage();
@@ -415,6 +418,7 @@ public class Model extends JPanel implements ActionListener {
                 detectDeath(i);
             }
             else {
+                g2d.drawImage(ghostEyes,ghosts[i].x,ghosts[i].y,this);
                 ghosts[i].respawnIfReady();
             }
         }
