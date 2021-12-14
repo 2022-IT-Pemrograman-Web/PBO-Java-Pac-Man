@@ -23,6 +23,8 @@ import java.util.Vector;
 
 public class Ghost extends Entity{
 
+    public boolean isDead;
+
     private URL loadImage(String fileName){
         return getClass().getResource("/images/" + fileName);
     }
@@ -41,6 +43,7 @@ public class Ghost extends Entity{
         this.imgs[1] = new ImageIcon(urlGhostRight).getImage();
         this.imgs[2] = new ImageIcon(urlGhostUp).getImage();
         this.imgs[3] = new ImageIcon(urlGhostDown).getImage();
+        isDead = false;
     }
 
     public boolean detectPlayerCollision(Player pacman){
@@ -52,6 +55,10 @@ public class Ghost extends Entity{
             System.out.println("Player object null!");
         }
         return false;
+    }
+
+    public void death(){
+        isDead = true;
     }
 
     public int getScreenPos(int gridSize, int gridN){

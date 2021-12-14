@@ -362,7 +362,12 @@ public class Model extends JPanel implements ActionListener {
     private void detectDeath(int id) {
     	//detect if pacman close to ghost with index id
         if (ghosts[id].detectPlayerCollision(player) && currentState == GameState.inGame) {
-            dying = true;
+            if(!player.canEatGhosts)
+                dying = true;
+            else
+            {
+                ghosts[id].death();
+            }
         }
     }
     
@@ -394,19 +399,21 @@ public class Model extends JPanel implements ActionListener {
         int pos;
 
         for (int i = 0; i < N_GHOSTS; i++) {
-            if(player.isFacing != Entity.Direction.NEUTRAL) {
-                if (ghosts[i].x % BLOCK_SIZE == 0 && ghosts[i].y % BLOCK_SIZE == 0) {
-                    pos = ghosts[i].getScreenPos(BLOCK_SIZE, N_BLOCKS);
+            if(!ghosts[i].isDead) {
+                if (player.isFacing != Entity.Direction.NEUTRAL) {
+                    if (ghosts[i].x % BLOCK_SIZE == 0 && ghosts[i].y % BLOCK_SIZE == 0) {
+                        pos = ghosts[i].getScreenPos(BLOCK_SIZE, N_BLOCKS);
 
-                    ghosts[i].moveGhost(screenData[pos]);
+                        ghosts[i].moveGhost(screenData[pos]);
+                    }
+                    ghosts[i].updateMovement();
                 }
-                ghosts[i].updateMovement();
+                fixEntityPos(ghosts[i]);
+                drawGhost(g2d, i);
+
+                //detect death
+                detectDeath(i);
             }
-            fixEntityPos(ghosts[i]);
-            drawGhost(g2d, i);
-            
-            //detect death
-            detectDeath(i);
         }
     }
 
