@@ -39,7 +39,7 @@ public class Model extends JPanel implements ActionListener {
     private int score;
     private int highScore;
     private int[] dx, dy;
-    private URL urlUp, urlDown, urlRight, urlLeft, urlGhostLeft, urlGhostRight, urlGhostUp, urlGhostDown, urlHeart;
+    private URL urlHeart;
     private Image heart;
     private Image titleImage;
     private Image[] startButton;
@@ -146,14 +146,6 @@ public class Model extends JPanel implements ActionListener {
     //untuk menampilkan gambar
     private void loadImages() {
         //load url
-        urlDown = loadImage("down.gif");
-        urlUp = loadImage("up.gif");
-        urlLeft = loadImage("left.gif");
-        urlRight = loadImage("right.gif");
-        urlGhostLeft = loadImage("ghostLeft.gif");
-        urlGhostRight = loadImage("ghostRight.gif");
-        urlGhostUp = loadImage("ghostUp.gif");
-        urlGhostDown = loadImage("ghostDown.gif");
         URL urlTitle = loadImage("title.png");
         urlHeart = loadImage("heart.png");
         URL urlStart1 = loadImage("Start1.png");
@@ -566,7 +558,7 @@ public class Model extends JPanel implements ActionListener {
             }
 
             //create new ghost with this configuration
-            ghosts[i] = new Ghost(startGhost_x*BLOCK_SIZE, startGhost_y*BLOCK_SIZE, 0, dx, validSpeeds[random], urlGhostLeft, urlGhostRight, urlGhostUp, urlGhostDown);
+            ghosts[i] = new Ghost(startGhost_x*BLOCK_SIZE, startGhost_y*BLOCK_SIZE, 0, dx, validSpeeds[random]);
             dx = -dx;
         }
         //create new player
@@ -577,7 +569,7 @@ public class Model extends JPanel implements ActionListener {
             start_x = numGenerator.nextInt(15); start_y = numGenerator.nextInt(15);
             oneDimensionPos = start_x + start_y*N_BLOCKS;
         }
-        player = new Player(start_x*BLOCK_SIZE, start_y*BLOCK_SIZE, 0, 0, PACMAN_SPEED, urlLeft, urlRight, urlUp, urlDown, lives);
+        player = new Player(start_x*BLOCK_SIZE, start_y*BLOCK_SIZE, 0, 0, PACMAN_SPEED, lives);
         dying = false;
         scoreWeight = 1;
     }
@@ -695,9 +687,8 @@ public class Model extends JPanel implements ActionListener {
                             System.exit(0);
                         }
                     }
-                    if(key == KeyEvent.VK_ESCAPE) {
-                        SoundPlayer.playSound("esc.wav");
-                        System.exit(0);
+                    if (key == KeyEvent.VK_ESCAPE){
+                        currentState = GameState.inGame;
                     }
                     if (key == KeyEvent.VK_UP) {
                         SoundPlayer.playSound("topdown.wav");
