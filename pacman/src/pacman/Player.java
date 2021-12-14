@@ -24,7 +24,7 @@ public class Player extends Entity{
         this.imgs[1] = new ImageIcon(urlRight).getImage();
         this.imgs[2] = new ImageIcon(urlUp).getImage();
         this.imgs[3] = new ImageIcon(urlDown).getImage();
-        canEatGhosts = false;
+        canEatGhosts = true;
     }
 
     public boolean getInput(int key){

@@ -414,6 +414,9 @@ public class Model extends JPanel implements ActionListener {
                 //detect death
                 detectDeath(i);
             }
+            else {
+                ghosts[i].respawnIfReady();
+            }
         }
     }
 

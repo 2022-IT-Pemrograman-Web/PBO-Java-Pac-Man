@@ -24,6 +24,7 @@ import java.util.Vector;
 public class Ghost extends Entity{
 
     public boolean isDead;
+    private Cooldown deathCooldown = new Cooldown(3);
 
     private URL loadImage(String fileName){
         return getClass().getResource("/images/" + fileName);
@@ -57,8 +58,24 @@ public class Ghost extends Entity{
         return false;
     }
 
+    public boolean deathCooldownFinished(){
+        deathCooldown.updateTimer();
+        return deathCooldown.isReady();
+    }
+
     public void death(){
+        deathCooldown.start();
         isDead = true;
+    }
+
+    public void respawn(){
+        isDead = false;
+    }
+
+    public void respawnIfReady(){
+        if(deathCooldownFinished()){
+            respawn();
+        }
     }
 
     public int getScreenPos(int gridSize, int gridN){
