@@ -12,7 +12,7 @@ public class Player extends Entity{
     private URL urlUp = loadImage("up.gif");
     private URL urlLeft = loadImage("left.gif");
     private URL urlRight = loadImage("right.gif");
-    private Cooldown superPowerUpDuration = new Cooldown (15);
+    private Cooldown superPowerUpDuration = new Cooldown (3);
     private int lives;
     public Direction bufferedDirection;
     public boolean canEatGhosts;
@@ -56,7 +56,7 @@ public class Player extends Entity{
     public void movePlayer(int ch){
         if(canEatGhosts){
             superPowerUpDuration.updateTimer();
-            canEatGhosts = superPowerUpDuration.isReady();
+            canEatGhosts = !superPowerUpDuration.isReady();
         }
 
         if (bufferedDirection != Direction.NEUTRAL) {
