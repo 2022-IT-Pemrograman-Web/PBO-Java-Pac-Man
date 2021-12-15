@@ -27,6 +27,7 @@ public class Ghost extends Entity{
     public boolean isVulnerable;
     private Cooldown deathCooldown = new Cooldown(3);
     private Image vulnerableImage;
+    private Image eyesImage;
 
     private URL loadImage(String fileName){
         return getClass().getResource("/images/ghost/" + fileName);
@@ -36,6 +37,7 @@ public class Ghost extends Entity{
     private URL urlGhostUp = loadImage("ghostUp.gif");
     private URL urlGhostDown = loadImage("ghostDown.gif");
     private URL urlGhostVulnerable = loadImage("vulnerable.png");
+    private URL urlGhostEyes = loadImage("ghostEyes.png");
     int[] dy_,dx_;
 
     public Ghost(int x, int y, int dx, int dy, int speed){
@@ -48,14 +50,17 @@ public class Ghost extends Entity{
         this.imgs[2] = new ImageIcon(urlGhostUp).getImage();
         this.imgs[3] = new ImageIcon(urlGhostDown).getImage();
         vulnerableImage = new ImageIcon(urlGhostVulnerable).getImage();
+        eyesImage = new ImageIcon(urlGhostEyes).getImage();
         isDead = false;
     }
 
     @Override
     public Image getCurrentImage() {
-        if(!isVulnerable)
-            return super.getCurrentImage();
-        return vulnerableImage;
+        if(isDead)
+            return eyesImage;
+        if(isVulnerable)
+            return vulnerableImage;
+        return super.getCurrentImage();
     }
 
     public boolean detectPlayerCollision(Player pacman){
