@@ -6,12 +6,13 @@ import java.net.URL;
 
 public class Player extends Entity{
     private URL loadImage(String fileName){
-        return getClass().getResource("/images/" + fileName);
+        return getClass().getResource("/images/player/" + fileName);
     }
     private URL urlDown = loadImage("down.gif");
     private URL urlUp = loadImage("up.gif");
     private URL urlLeft = loadImage("left.gif");
     private URL urlRight = loadImage("right.gif");
+    private Cooldown superPowerUpDuration = new Cooldown (15);
     private int lives;
     public Direction bufferedDirection;
     public boolean canEatGhosts;
@@ -24,7 +25,7 @@ public class Player extends Entity{
         this.imgs[1] = new ImageIcon(urlRight).getImage();
         this.imgs[2] = new ImageIcon(urlUp).getImage();
         this.imgs[3] = new ImageIcon(urlDown).getImage();
-        canEatGhosts = true;
+        canEatGhosts = false;
     }
 
     public boolean getInput(int key){
@@ -42,6 +43,10 @@ public class Player extends Entity{
             case KeyEvent.VK_DOWN:
                 bufferedDirection = Direction.DOWN;
                 break;
+            case KeyEvent.VK_SPACE:
+                activateSuperPellet();
+                inputStatus = false;
+                break;
             default:
                 inputStatus = false;
         }
@@ -49,6 +54,11 @@ public class Player extends Entity{
     }
 
     public void movePlayer(int ch){
+        if(canEatGhosts){
+            superPowerUpDuration.updateTimer();
+            canEatGhosts = superPowerUpDuration.isReady();
+        }
+
         if (bufferedDirection != Direction.NEUTRAL) {
             if (!((bufferedDirection == Direction.LEFT && (ch & 1) != 0)
                     || (bufferedDirection == Direction.RIGHT && (ch & 4) != 0)
@@ -85,6 +95,11 @@ public class Player extends Entity{
             dx = 0;
             dy = 0;
         }
+    }
+
+    public void activateSuperPellet(){
+        superPowerUpDuration.start();
+        canEatGhosts = true;
     }
 
     public int getLives() {

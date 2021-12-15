@@ -27,7 +27,7 @@ public class Ghost extends Entity{
     private Cooldown deathCooldown = new Cooldown(3);
 
     private URL loadImage(String fileName){
-        return getClass().getResource("/images/" + fileName);
+        return getClass().getResource("/images/ghost/" + fileName);
     }
     private URL urlGhostLeft = loadImage("ghostLeft.gif");
     private URL urlGhostRight = loadImage("ghostRight.gif");
