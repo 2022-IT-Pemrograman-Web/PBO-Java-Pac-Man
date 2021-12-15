@@ -499,13 +499,16 @@ public class Model extends JPanel implements ActionListener {
         //cek spawn
         if(score % 250 == 0 & score > 0){
             //spawn the power up
-            int powerKind = numGenerator.nextInt(2);
+            int powerKind = numGenerator.nextInt(3);
             switch (powerKind) {
                 case 0 :
                     powerList.add(new HeartPower(ghosts[0].x, ghosts[0].y, urlHeart));
                     break;
                 case 1 :
                     powerList.add(new ScoreWeightPower(ghosts[0].x, ghosts[0].y, loadImage("thunder.gif")));
+                    break;
+                case 2 :
+                    powerList.add(new EatGhostPower(ghosts[0].x, ghosts[0].y, loadImage("superPellet.png")));
                     break;
             }
             score+=scoreWeight;
@@ -524,6 +527,10 @@ public class Model extends JPanel implements ActionListener {
                     if(curPower instanceof ScoreWeightPower){
                         scoreWeight = curPower.activatePower(scoreWeight);
                         System.out.println(scoreWeight);
+                        SoundPlayer.playSound("bonuspoint.wav");
+                    }
+                    if(curPower instanceof EatGhostPower){
+                        curPower.activatePower(player);
                         SoundPlayer.playSound("bonuspoint.wav");
                     }
                     powerList.remove(i);

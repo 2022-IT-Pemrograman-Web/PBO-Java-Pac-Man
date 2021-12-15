@@ -12,7 +12,7 @@ public class Player extends Entity{
     private URL urlUp = loadImage("up.gif");
     private URL urlLeft = loadImage("left.gif");
     private URL urlRight = loadImage("right.gif");
-    private Cooldown superPowerUpDuration = new Cooldown (3);
+    private Cooldown superPowerUpDuration = new Cooldown (8); //how long eating ghost power lasts
     private int lives;
     public Direction bufferedDirection;
     public boolean canEatGhosts;
@@ -43,6 +43,7 @@ public class Player extends Entity{
             case KeyEvent.VK_DOWN:
                 bufferedDirection = Direction.DOWN;
                 break;
+            //testing super pellet power up
             case KeyEvent.VK_SPACE:
                 activateSuperPellet();
                 inputStatus = false;
