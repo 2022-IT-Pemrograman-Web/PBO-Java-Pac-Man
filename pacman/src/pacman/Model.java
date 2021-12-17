@@ -37,6 +37,7 @@ public class Model extends JPanel implements ActionListener {
     private int lvlCounter = 1;
     private int N_GHOSTS = 1;
     private int score;
+    private int score_before = 0; //untuk spawn powerup
     private int highScore;
     private URL urlHeart;
     private Image heart;
@@ -507,8 +508,10 @@ public class Model extends JPanel implements ActionListener {
 
     private void powerUpLogic(Graphics2D g2d){
         //cek spawn
-        if(score % 250 == 0 & score > 0){
+        if(((score-score_before) >= 250 ) & score > 0){
             //spawn the power up
+            score_before = score;
+           // System.out.println(score_before);
             int powerKind = numGenerator.nextInt(3);
             switch (powerKind) {
                 case 0 :
@@ -563,6 +566,7 @@ public class Model extends JPanel implements ActionListener {
         currentSpeed = 3;
         lvlCounter = 1;
         N_GHOSTS = 1;
+        score_before = 0;
     }
 
     private void initLevel() {
