@@ -363,6 +363,7 @@ public class Model extends JPanel implements ActionListener {
                 dying = true;
             else
             {
+                score += 25;
                 ghosts[id].death();
             }
         }
@@ -511,7 +512,7 @@ public class Model extends JPanel implements ActionListener {
         if(((score-score_before) >= 250 ) & score > 0){
             //spawn the power up
             score_before = score;
-           // System.out.println(score_before);
+            System.out.println(score_before);
             int powerKind = numGenerator.nextInt(3);
             switch (powerKind) {
                 case 0 :
