@@ -38,7 +38,6 @@ public class Model extends JPanel implements ActionListener {
     private int N_GHOSTS = 1;
     private int score;
     private int highScore;
-    private int[] dx, dy;
     private URL urlHeart;
     private Image heart;
     private Image titleImage;
@@ -55,8 +54,7 @@ public class Model extends JPanel implements ActionListener {
     private Player player;
     private int lives;
     private Ghost[] ghosts;
-    private Vector<PowerUp> powerList = new Vector<PowerUp>();
-    private int totalPowerUpType = 2;
+    private Vector<PowerUp> powerList = new Vector<>();
     Random numGenerator = new Random();
     private enum GameState{
         inGame,
@@ -97,11 +95,11 @@ public class Model extends JPanel implements ActionListener {
         int i = 0;
         try {
             String levelName = String.format("./src/map/level%d.txt", lvlCounter);
-            //cek apakah masi ada level map available
+            //cek if there is still level map available
             if(Files.exists(Paths.get(levelName))){
                 input = new Scanner(Paths.get(levelName)); //ganti path
             }else{
-                input = new Scanner(Paths.get("./src/map/freelevel.txt")); //ganti path
+                input = new Scanner(Paths.get("./src/map/freelevel.txt")); //change path
             }
             while (input.hasNext()) {
                 String[] data = input.nextLine().split(",");
@@ -118,7 +116,7 @@ public class Model extends JPanel implements ActionListener {
         }
     }
 
-    //untuk membuka file dan menampilkan highscore
+    //to open file and show highscore
     private void loadHighScore(){
         try {
             input = new Scanner(Paths.get("../highscore.txt"));
@@ -188,8 +186,6 @@ public class Model extends JPanel implements ActionListener {
 
         screenData = new short[N_BLOCKS * N_BLOCKS];
         d = new Dimension(800, 800);
-        dx = new int[4];
-        dy = new int[4];
 
         ghosts = new Ghost[MAX_GHOSTS];
         timer = new Timer(40, this);
@@ -560,8 +556,41 @@ public class Model extends JPanel implements ActionListener {
         int i;
         for (i = 0; i < N_BLOCKS * N_BLOCKS; i++) {
             screenData[i] = levelData[i];
+
         }
         continueLevel();
+    }
+
+    private boolean isSpawnInside(int x, int y){
+        //cek atas
+        if(y > 0){
+            int temp = y-1;
+            //kalau di atas ada border atas (tidak bisa masuk dari atas)
+            if((screenData[x + temp*N_BLOCKS]&8) == 8){
+                return true;
+            }
+        }
+        //cek bawah
+        if(y < 14){
+            int temp = y+1;
+            //cek di bawah ada border bawah, kalau ada berarti spawn di dalam
+            if((screenData[x + temp*N_BLOCKS]&2) == 2){
+                return true;
+            }
+        }
+        //cek kiri
+        if(x > 0){
+            int temp = x-1;
+            if((screenData[temp + y*N_BLOCKS]&4) == 4){
+                return true;
+            }
+        }
+        //cek kanan
+        if(x < 14){
+            int temp = x+1;
+            return (screenData[temp + y * N_BLOCKS] & 1) == 1;
+        }
+        return false;
     }
 
     private void continueLevel() {
@@ -570,7 +599,7 @@ public class Model extends JPanel implements ActionListener {
         int random;
         int startGhost_x = numGenerator.nextInt(15), startGhost_y = numGenerator.nextInt(15);
         int ghostOneDimensionPos = startGhost_x + startGhost_y*N_BLOCKS;
-        while(screenData[ghostOneDimensionPos] != 16){
+        while(isSpawnInside(startGhost_x, startGhost_y)){
             startGhost_x = numGenerator.nextInt(15); startGhost_y = numGenerator.nextInt(15);
             ghostOneDimensionPos = startGhost_x + startGhost_y*N_BLOCKS;
 
@@ -590,7 +619,7 @@ public class Model extends JPanel implements ActionListener {
         //create a good start pos
         int start_x = numGenerator.nextInt(15), start_y = numGenerator.nextInt(15);
         int oneDimensionPos = start_x + start_y*N_BLOCKS;
-        while(screenData[oneDimensionPos] != 16 && oneDimensionPos == ghostOneDimensionPos){
+        while(isSpawnInside(start_x, start_y) || oneDimensionPos == ghostOneDimensionPos){
             start_x = numGenerator.nextInt(15); start_y = numGenerator.nextInt(15);
             oneDimensionPos = start_x + start_y*N_BLOCKS;
         }
