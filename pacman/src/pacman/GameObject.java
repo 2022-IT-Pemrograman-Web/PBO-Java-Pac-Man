@@ -1,6 +1,6 @@
 package pacman;
 
-public class GameObject {
+public abstract class GameObject {
     //every game object has a coordinate location on 2d plane
     protected int x;
     protected int y;

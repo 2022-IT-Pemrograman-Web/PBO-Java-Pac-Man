@@ -2,10 +2,7 @@ package pacman;
 
 import java.awt.*;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
 import java.io.IOException;
 import java.net.URL;
 
@@ -25,6 +22,7 @@ public class Model extends JPanel implements ActionListener {
     private Dimension d;
     private final Font smallFont = new Font("Arial", Font.BOLD, 28);
     private final Font gamerFont = FontLoader.getFontFromFile("ARCADECLASSIC", 62f);
+    private final Font smollFont = FontLoader.getFontFromFile("ARCADECLASSIC", 31f);
     private final Font gamerFontSmall = FontLoader.getFontFromFile("ARCADECLASSIC", 48f);
     private SoundPlayer highScoreSound = new SoundPlayer("sheesh.wav");
     private boolean dying = false;
@@ -62,7 +60,8 @@ public class Model extends JPanel implements ActionListener {
         introScreen,
         gameOver,
         aboutScreen,
-        pauseScreen
+        pauseScreen,
+        oneLastChance
     }
 
     private GameState currentState = GameState.introScreen;
@@ -75,12 +74,23 @@ public class Model extends JPanel implements ActionListener {
     private int currentSpeed = 3;
     private short[] screenData;
     private Timer timer;
+    private boolean pickedAnswer = false;
+    private enum resultSuit{
+        win,
+        draw,
+        lose,
+        notYet
+    }
+    private resultSuit verdictDeatch = resultSuit.notYet;
+    private MouseHandler handler = new MouseHandler();
+    private boolean continuePlaySuit = false;
 
     public Model() {
         loadMap();
         loadImages();
         loadHighScore();
         initVariables();
+        addMouseListener(handler);
         addKeyListener(new TAdapter());
         setFocusable(true);
         initGame();
@@ -291,6 +301,97 @@ public class Model extends JPanel implements ActionListener {
         }
     }
 
+    private void playOneLastChance(Graphics2D g2d){
+        //set msg
+        String info1 = "You are in the limbo";
+        String info2 = "If you win in this battle";
+        String info3 = "You will be revived";
+        String info4 = "Choose Rock | Paper | Scissor?";
+
+        g2d.setColor(Color.yellow);
+        g2d.setFont(smollFont);
+
+        g2d.drawString(info1, (SCREEN_SIZE)/4, 100);
+        g2d.drawString(info2, (SCREEN_SIZE)/4, 150);
+        g2d.drawString(info3, (SCREEN_SIZE)/4, 200);
+        g2d.drawString(info4, (SCREEN_SIZE)/4, 250);
+        //buat 3 rock paper scissor button
+        ImageButton buttonRock = new ImageButton(SCREEN_SIZE/3 - 148, 2*SCREEN_SIZE/3, 100, 100,
+                                                loadImage("rocku.png"), 0);
+        ImageButton buttonPaper = new ImageButton(SCREEN_SIZE/3 + 74, 2*SCREEN_SIZE/3, 100, 100,
+                                                loadImage("rocku.png"), 1);
+        ImageButton buttonScissor = new ImageButton(2*SCREEN_SIZE/3 + 74, 2*SCREEN_SIZE/3, 100, 100,
+                                                loadImage("rocku.png"), 2);
+
+        //gambar sir
+        drawImageObject(g2d, buttonRock);
+        drawImageObject(g2d, buttonPaper);
+        drawImageObject(g2d, buttonScissor);
+        //kalau diklik dan belum ambil jawaban
+        if(handler.isClicking && !pickedAnswer){
+
+            if(buttonRock.isClicked(handler.cor_x, handler.cor_y)){
+                System.out.println("BATU DI KLIK");
+                pickedAnswer = true;
+            }
+            else if(buttonPaper.isClicked(handler.cor_x, handler.cor_y)){
+                System.out.println("PAPER DI KLIK");
+                pickedAnswer = true;
+            }else if(buttonScissor.isClicked(handler.cor_x, handler.cor_y)){
+                System.out.println("GUNTING KLIK");
+                pickedAnswer = true;
+            }
+        }
+        //kalau udah ambi jawaban tapi belum simulasi hasil
+        if(pickedAnswer && (verdictDeatch == resultSuit.notYet)){
+            int res = numGenerator.nextInt(3);
+            if(res % 3 == 0){
+                //WIN CERITANYA
+                verdictDeatch = resultSuit.win;
+                System.out.println("YEY MENANG SUIT");
+                player.increaseLives();
+            }else if(res % 3 == 1){
+                //DRAW CERITANYA
+                verdictDeatch = resultSuit.draw;
+                System.out.println("DRAW LOLL");
+            }else{
+                //YAH KALAH
+                verdictDeatch = resultSuit.lose;
+                dying = true;
+                System.out.println("kalah LOLL");
+            }
+        }
+        //kalau udah ada result dan di klik lagi, baru lanjut main
+        if(verdictDeatch != resultSuit.notYet){
+            switch (verdictDeatch){
+                case win:
+                    String win = "YOU WIN, YOU MAY LIVE ONCE AGAIN";
+                    g2d.drawString(win, (SCREEN_SIZE)/4, 300);
+                    break;
+                case draw:
+                    String draw = "A DRAW. CLOSE ONE. TRY AGAIN";
+                    g2d.drawString(draw, (SCREEN_SIZE)/4, 300);
+                    break;
+                case lose:
+                    String lose = "YOU LOSE";
+                    g2d.drawString(lose, (SCREEN_SIZE)/4, 300);
+                    break;
+            }
+            String explain = "Press enter to try again";
+            g2d.drawString(explain, (SCREEN_SIZE)/4, 350);
+            if(continuePlaySuit){
+                pickedAnswer = false;
+                continuePlaySuit = false;
+                if(verdictDeatch!=resultSuit.draw){
+                    currentState = GameState.inGame;
+                    continuePlaySuit = false;
+                }
+                verdictDeatch = resultSuit.notYet;
+
+            }
+        }
+    }
+
     private void drawScore(Graphics2D g) {
         g.setFont(smallFont);
         g.setColor(new Color(5, 181, 79));
@@ -345,14 +446,21 @@ public class Model extends JPanel implements ActionListener {
 
         player.decreaseLives();
         lives = player.getLives();
-        if (player.getLives() == 0) {
-            SoundPlayer.playSound("death.wav");
-            currentState = GameState.gameOver;
+        if (player.getLives() <= 0) {
+            System.out.println("MAIN LAST CHANCE");
+            if(player.getLives() == 0){
+                currentState=GameState.oneLastChance;
+            }
+            else{
+                System.out.println("MATI");
+                SoundPlayer.playSound("death.wav");
+                currentState = GameState.gameOver;
+            }
         }
         else{
             SoundPlayer.playSound("damaged.wav");
         }
-
+        scoreWeight = 1;
         continueLevel();
     }
 
@@ -373,8 +481,8 @@ public class Model extends JPanel implements ActionListener {
     	g2d.drawImage(en.getCurrentImage(), en.x + 2, en.y + 2, this);
     }
 
-    private void drawPowerUp(Graphics2D g2d, PowerUp pu){
-        g2d.drawImage(pu.img, pu.x + 2, pu.y + 2, this);
+    private void drawImageObject(Graphics2D g2d, ImageObject io){
+        g2d.drawImage(io.img, io.x + 2, io.y + 2, this);
     }
 
     private void fixEntityPos(Entity en){
@@ -553,7 +661,7 @@ public class Model extends JPanel implements ActionListener {
 
             //draw it
             for(int i = 0;i<powerList.size();i++) {
-                drawPowerUp(g2d, powerList.get(i));
+                drawImageObject(g2d, powerList.get(i));
             }
         }
     }
@@ -567,7 +675,11 @@ public class Model extends JPanel implements ActionListener {
         currentSpeed = 3;
         lvlCounter = 1;
         N_GHOSTS = 1;
+        scoreWeight = 1;
         score_before = 0;
+        verdictDeatch = resultSuit.notYet;
+        pickedAnswer = false;
+        continuePlaySuit = false;
     }
 
     private void initLevel() {
@@ -644,7 +756,10 @@ public class Model extends JPanel implements ActionListener {
         }
         player = new Player(start_x*BLOCK_SIZE, start_y*BLOCK_SIZE, 0, 0, PACMAN_SPEED, lives);
         dying = false;
+        pickedAnswer = false;
         scoreWeight = 1;
+        verdictDeatch = resultSuit.notYet;
+        continuePlaySuit = false;
     }
 
 
@@ -675,6 +790,8 @@ public class Model extends JPanel implements ActionListener {
             case gameOver:
                 showGameOverScreen(g2d);
                 break;
+            case oneLastChance:
+                playOneLastChance(g2d);
         }
 
         Toolkit.getDefaultToolkit().sync();
@@ -781,6 +898,11 @@ public class Model extends JPanel implements ActionListener {
                         }
                     }
                     break;
+                case oneLastChance:
+                    if(key == KeyEvent.VK_ENTER){
+                        continuePlaySuit = true;
+                    }
+                    break;
                 case gameOver:
                     if (key == KeyEvent.VK_ENTER) {
                         SoundPlayer.playSound("enter.wav");
@@ -797,6 +919,51 @@ public class Model extends JPanel implements ActionListener {
         }
     }
 
+    //mouse listener
+    class MouseHandler implements MouseListener{
+        private int cor_x, cor_y;
+        private boolean isClicking = false;
+        public MouseHandler(){
+            super();
+            cor_x =0;
+            cor_y=0;
+        }
+
+        @Override
+        public void mouseClicked(MouseEvent event){
+            cor_x = event.getX();
+            cor_y = event.getY();
+//            isClicking = true;
+//            System.out.print(String.format("Clicked at %d %d\n", event.getX(), event.getY()));
+        }
+
+        @Override
+        public void mousePressed(MouseEvent event){
+            isClicking = true;
+            cor_x = event.getX();
+            cor_y = event.getY();
+            System.out.print(String.format("pressed at %d %d\n", event.getX(), event.getY()));
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent event){
+//            System.out.print(String.format("released at %d %d\n", event.getX(), event.getY()));
+            isClicking = false;
+            cor_x = event.getX();
+            cor_y = event.getY();
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent event){
+//            System.out.print(String.format("entered at %d %d\n", event.getX(), event.getY()));
+        }
+
+        @Override
+        public void mouseExited(MouseEvent event){
+//            isClicking = false;
+//            System.out.print(String.format("exited at %d %d\n", event.getX(), event.getX()));
+        }
+    }
 
     @Override
     public void actionPerformed(ActionEvent e) {

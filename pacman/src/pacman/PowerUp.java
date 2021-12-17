@@ -5,12 +5,10 @@ import javax.swing.*;
 import java.awt.Image;
 //for image path
 import java.net.URL;
-public class PowerUp extends GameObject{
-    protected Image img;
+public class PowerUp extends ImageObject{
 
     public PowerUp(int x, int y, URL urlImg) {
-        super(x, y);
-        this.img = new ImageIcon(urlImg).getImage();
+        super(x, y, urlImg);
     }
 
     public int activatePower(int x){
