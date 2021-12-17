@@ -6,6 +6,7 @@ import java.awt.event.*;
 import java.io.IOException;
 import java.net.URL;
 
+import javax.swing.*;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -46,6 +47,9 @@ public class Model extends JPanel implements ActionListener {
     private Image[] continueButton;
     private Image[] restartButton;
     private Image[] menuButton;
+    private Image[] rockButton;
+    private Image[] scissorButton;
+    private Image[] papperButton;
     private int selectedButtonIntro = 0;
     private int selectedButtonPause = 0;
 
@@ -170,6 +174,12 @@ public class Model extends JPanel implements ActionListener {
         URL urlRestart2 = loadImage("restart2.png");
         URL urlMenu1 = loadImage("menu1.png");
         URL urlMenu2 = loadImage("menu2.png");
+        URL urlRock1 = loadImage("Rock1.png");
+        URL urlRock2 = loadImage("Rock2.png");
+        URL urlPapper1 = loadImage ("Papper1.png");
+        URL urlPapper2 = loadImage ("Papper2.png");
+        URL urlScissor1 = loadImage ("Scissor1.png");
+        URL urlScissor2 = loadImage ("Scissor2.png");
         //get images
         startButton = new Image[2];
         aboutButton = new Image[2];
@@ -177,7 +187,9 @@ public class Model extends JPanel implements ActionListener {
         restartButton = new Image[2];
         continueButton = new Image[2];
         menuButton = new Image[2];
-
+        papperButton = new Image[2];
+        rockButton = new Image[2];
+        scissorButton = new Image[2];
         heart = new ImageIcon(urlHeart).getImage();
         titleImage = new ImageIcon(urlTitle).getImage();
         startButton[0] = new ImageIcon(urlStart1).getImage();
@@ -192,7 +204,14 @@ public class Model extends JPanel implements ActionListener {
         restartButton[1] = new ImageIcon(urlRestart2).getImage();
         menuButton[0] = new ImageIcon(urlMenu1).getImage();
         menuButton[1] = new ImageIcon(urlMenu2).getImage();
+        papperButton[0] = new ImageIcon(urlPapper1).getImage();
+        papperButton[1] = new ImageIcon(urlPapper2).getImage();
+        rockButton[0] = new ImageIcon(urlRock1).getImage();
+        rockButton[1] = new ImageIcon(urlRock2).getImage();
+        scissorButton[0] = new ImageIcon(urlScissor1).getImage();
+        scissorButton[1] = new ImageIcon(urlScissor2).getImage();
     }
+
     private void initVariables() {
 
         screenData = new short[N_BLOCKS * N_BLOCKS];
@@ -317,19 +336,24 @@ public class Model extends JPanel implements ActionListener {
         g2d.drawString(info4, (SCREEN_SIZE)/4, 250);
         //buat 3 rock paper scissor button
         ImageButton buttonRock = new ImageButton(SCREEN_SIZE/3 - 148, 2*SCREEN_SIZE/3, 100, 100,
-                                                loadImage("rocku.png"), 0);
+                                                loadImage("Rock1.png"), 0);
         ImageButton buttonPaper = new ImageButton(SCREEN_SIZE/3 + 74, 2*SCREEN_SIZE/3, 100, 100,
-                                                loadImage("rocku.png"), 1);
+                                                loadImage("Papper1.png"), 1);
         ImageButton buttonScissor = new ImageButton(2*SCREEN_SIZE/3 + 74, 2*SCREEN_SIZE/3, 100, 100,
-                                                loadImage("rocku.png"), 2);
+                                                loadImage("Scissor1.png"), 2);
+        Image rocImage,papImage,sciImage;
+        g2d.setColor(Color.yellow);
+        g2d.setFont(gamerFont);
+        rocImage = rockButton[0];
+        papImage = papperButton[0];
+        sciImage = scissorButton[0];
 
-        //gambar sir
-        drawImageObject(g2d, buttonRock);
-        drawImageObject(g2d, buttonPaper);
-        drawImageObject(g2d, buttonScissor);
-        //kalau diklik dan belum ambil jawaban
+        g2d.drawImage(rocImage,SCREEN_SIZE/3 - 148, 2*SCREEN_SIZE/3, 100, 100,this);
+        g2d.drawImage(papImage,SCREEN_SIZE/3 + 74, 2*SCREEN_SIZE/3, 100, 100,this);
+        g2d.drawImage(sciImage,2*SCREEN_SIZE/3 + 74, 2*SCREEN_SIZE/3, 100, 100,this);
+//        gambar sir
+//        kalau diklik dan belum ambil jawaban
         if(handler.isClicking && !pickedAnswer){
-
             if(buttonRock.isClicked(handler.cor_x, handler.cor_y)){
                 System.out.println("BATU DI KLIK");
                 pickedAnswer = true;
