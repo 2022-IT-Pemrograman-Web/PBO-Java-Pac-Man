@@ -378,15 +378,29 @@ public class Model extends JPanel implements ActionListener {
     private void fixEntityPos(Entity en){
         if(en.y > 672) {
             en.y = 0;
+            //kalau ternyata di atasnya ada border atas, teleport ke bawah
+            if((screenData[en.x/BLOCK_SIZE]&2) == 2){
+                en.y = 672;
+            }
         }
         if(en.x > 672){
             en.x = 0;
+            //kalau di kiri ada tembok ke kiri
+            if((screenData[en.y/BLOCK_SIZE*N_BLOCKS]&1) == 1){
+                en.x = 672;
+            }
         }
         if(en.x < 0){
             en.x = 672;
+            if((screenData[14 + en.y/BLOCK_SIZE*N_BLOCKS]&4)==4){
+                en.x = 0;
+            }
         }
-        if(en.y < 0){
+        if(en.y < 0 ){
             en.y = 672;
+            if((screenData[en.x/BLOCK_SIZE + 210]&8) == 8){
+                en.y = 0;
+            }
         }
     }
 
