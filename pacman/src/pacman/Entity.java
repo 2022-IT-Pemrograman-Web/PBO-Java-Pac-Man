@@ -2,10 +2,6 @@ package pacman;
 
 //for image
 import java.awt.Image;
-//for image path
-import java.net.URL;
-
-import javax.swing.ImageIcon;
 
 //Class for all the entity in the game
 public class Entity extends GameObject{
