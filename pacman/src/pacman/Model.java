@@ -373,14 +373,17 @@ public class Model extends JPanel implements ActionListener {
             if(buttonCon.isClicked(handler.cor_x, handler.cor_y)){
                 System.out.println("CON DI KLIK");
                 currentState = GameState.inGame;
+                handler.isClicking = false;
             }
             else if(buttonRes.isClicked(handler.cor_x, handler.cor_y)){
                 System.out.println("RES DI KLIK");
                 currentState = GameState.inGame;
                 initGame();
+                handler.isClicking = false;
             }else if(buttonMen.isClicked(handler.cor_x, handler.cor_y)){
                 System.out.println("MENU KLIK");
                 currentState = GameState.introScreen;
+                handler.isClicking = false;
             }
         }
         g2d.drawImage(conImage,SCREEN_SIZE/2 - 130, SCREEN_SIZE/2, 574 ,96,this);
@@ -389,7 +392,7 @@ public class Model extends JPanel implements ActionListener {
     }
     private void showAboutScreen(Graphics2D g2d) {
         Font smallGamerFont = FontLoader.getFontFromFile("ARCADECLASSIC", 32f);
-        String aboutText = "NORMAL PACMAN!";
+        String aboutText = "NOT SO NORMAL PACMAN!";
         String aboutText2 = "Built By ";
         String aboutText3 = "Anak Agung Yatestha Parwata  5025201234";
         String aboutText4 = "Januar Evan  5025201210";
