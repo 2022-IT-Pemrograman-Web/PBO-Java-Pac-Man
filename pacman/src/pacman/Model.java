@@ -345,7 +345,10 @@ public class Model extends JPanel implements ActionListener {
         rocImage = rockButton[0];
         papImage = papperButton[0];
         sciImage = scissorButton[0];
-
+        if(handler.cor_x >= SCREEN_SIZE/3 - 148 && handler.cor_x <= SCREEN_SIZE/3-48 && handler.cor_y >= 2*SCREEN_SIZE/3 && handler.cor_y <= 2*SCREEN_SIZE/3) {
+            rocImage = rockButton[1];
+            System.out.println("MASUK BATU GES");
+        }
         g2d.drawImage(rocImage,SCREEN_SIZE/3 - 148, 2*SCREEN_SIZE/3, 100, 100,this);
         g2d.drawImage(papImage,SCREEN_SIZE/3 + 74, 2*SCREEN_SIZE/3, 100, 100,this);
         g2d.drawImage(sciImage,2*SCREEN_SIZE/3 + 74, 2*SCREEN_SIZE/3, 100, 100,this);
@@ -973,7 +976,11 @@ public class Model extends JPanel implements ActionListener {
         }
 
         @Override
-        public void mouseEntered(MouseEvent event){
+        public void mouseEntered(MouseEvent event) {
+//            System.out.print(String.format("entered at %d %d\n", event.getX(), event.getY()));
+            System.out.print(String.format("entered at %d %d\n", event.getX(), event.getY()));
+            cor_x = event.getX();
+            cor_y = event.getY();
         }
 
         @Override
