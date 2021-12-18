@@ -258,19 +258,38 @@ public class Model extends JPanel implements ActionListener {
                 staImage = startButton[1];
                 aboImage = aboutButton[0];
                 exiImage = exitButton[0];
+                selectedButtonIntro = 0;
             }
             else if(handler.cor_y >= 468 && handler.cor_y <= 540){
                 staImage = startButton[0];
                 aboImage = aboutButton[1];
                 exiImage = exitButton[0];
+                selectedButtonIntro = 1;
                 //     System.out.println("ontop of papper");
             }
             else if(handler.cor_y >= 552 && handler.cor_y <= 648){
                 staImage = startButton[0];
                 aboImage = aboutButton[0];
                 exiImage = exitButton[1];
+                selectedButtonIntro = 2;
                 //     System.out.println("ontop of scissor");
             }
+        }
+
+        if(selectedButtonIntro == 0 || handler.cor_x >= 244 && handler.cor_x <= 470 && handler.cor_y>= 372&& handler.cor_y <= 444){
+            staImage = startButton[1];
+            aboImage = aboutButton[0];
+            exiImage = exitButton[0];
+        }
+        else if(selectedButtonIntro == 1 || handler.cor_x >= 244 && handler.cor_x <= 470 && handler.cor_y >= 468 && handler.cor_y <= 540){
+            staImage = startButton[0];
+            aboImage = aboutButton[1];
+            exiImage = exitButton[0];
+        }
+        else{
+            staImage = startButton[0];
+            aboImage = aboutButton[0];
+            exiImage = exitButton[1];
         }
 
         if(handler.isClicking){
@@ -452,18 +471,18 @@ public class Model extends JPanel implements ActionListener {
         if(handler.isClicking && !pickedAnswer){
             if(buttonRock.isClicked(handler.cor_x, handler.cor_y)){
                 System.out.println("BATU DI KLIK");
-                chosenvalue = 0;
+                chosenvalue = buttonRock.getReturnValue();
                 System.out.println(chosenvalue);
                 pickedAnswer = true;
             }
             else if(buttonPaper.isClicked(handler.cor_x, handler.cor_y)){
                 System.out.println("PAPER DI KLIK");
-                chosenvalue = 1;
+                chosenvalue = buttonRock.getReturnValue();
                 System.out.println(chosenvalue);
                 pickedAnswer = true;
             }else if(buttonScissor.isClicked(handler.cor_x, handler.cor_y)){
                 System.out.println("GUNTING KLIK");
-                chosenvalue = 2;
+                chosenvalue = buttonRock.getReturnValue();
                 System.out.println(chosenvalue);
                 pickedAnswer = true;
             }
