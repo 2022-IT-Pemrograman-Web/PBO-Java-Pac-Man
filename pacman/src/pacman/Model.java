@@ -240,6 +240,12 @@ public class Model extends JPanel implements ActionListener {
         Image aboImage,staImage,exiImage;
         g2d.setColor(Color.yellow);
         g2d.drawImage(titleImage,SCREEN_SIZE/2 - 266, SCREEN_SIZE/4, 532,96,this);
+        ImageButton buttonStart = new ImageButton(SCREEN_SIZE/2 - 130, SCREEN_SIZE/2, 574 ,96,
+                loadImage("Start1.png"), 0);
+        ImageButton buttonAbort = new ImageButton(SCREEN_SIZE/2 - 130, SCREEN_SIZE/2 + 96, 574,96,
+                loadImage("About1.png"), 1);
+        ImageButton buttonExit = new ImageButton(SCREEN_SIZE/2 - 130, SCREEN_SIZE/2 + 192, 574,96,
+                loadImage("Exit1.png"), 2);
         if(selectedButtonIntro % 3 == 0){
             staImage = startButton[1];
             aboImage = aboutButton[0];
@@ -266,6 +272,12 @@ public class Model extends JPanel implements ActionListener {
         String pauseString = "Paused";
         g2d.setFont(gamerFont);
         g2d.drawString(pauseString, (SCREEN_SIZE)/2 - 100, 300);
+        ImageButton buttonCon = new ImageButton(SCREEN_SIZE/2 - 130, SCREEN_SIZE/2, 574 ,96,
+                loadImage("Start1.png"), 0);
+        ImageButton buttonRes = new ImageButton(SCREEN_SIZE/2 - 130, SCREEN_SIZE/2 + 96, 574,96,
+                loadImage("About1.png"), 1);
+        ImageButton buttonMen = new ImageButton(SCREEN_SIZE/2 - 130, SCREEN_SIZE/2 + 192, 574,96,
+                loadImage("Exit1.png"), 2);
         if(selectedButtonPause % 3 == 0){
             conImage = continueButton[1];
             resImage = restartButton[0];
@@ -280,6 +292,41 @@ public class Model extends JPanel implements ActionListener {
             conImage = continueButton[0];
             resImage = restartButton[0];
             menImage = menuButton[1];
+        }
+        if(handler.cor_x>= 246&& handler.cor_x <=463) {
+            if (handler.cor_y >= 372 && handler.cor_y <= 443) {
+                //    System.out.println("ontop of rock");
+                conImage = continueButton[1];
+                resImage = restartButton[0];
+                menImage = menuButton[0];
+                selectedButtonPause = 0;
+            }
+            else if(handler.cor_y >= 473 && handler.cor_y <= 543){
+                conImage = continueButton[0];
+                resImage = restartButton[1];
+                menImage = menuButton[0];
+                selectedButtonPause = 1;
+            }
+            else if(handler.cor_y >= 564 && handler.cor_y <= 640){
+                conImage = continueButton[0];
+                resImage = restartButton[0];
+                menImage = menuButton[1];
+                selectedButtonPause = 2;
+            }
+        }
+        if(handler.isClicking && !pickedAnswer){
+            if(buttonCon.isClicked(handler.cor_x, handler.cor_y)){
+                System.out.println("CON DI KLIK");
+                currentState = GameState.inGame;
+            }
+            else if(buttonRes.isClicked(handler.cor_x, handler.cor_y)){
+                System.out.println("RES DI KLIK");
+                currentState = GameState.inGame;
+                initGame();
+            }else if(buttonMen.isClicked(handler.cor_x, handler.cor_y)){
+                System.out.println("MENU KLIK");
+                currentState = GameState.introScreen;
+            }
         }
         g2d.drawImage(conImage,SCREEN_SIZE/2 - 130, SCREEN_SIZE/2, 574 ,96,this);
         g2d.drawImage(resImage,SCREEN_SIZE/2 - 130, SCREEN_SIZE/2 + 96, 574,96,this);
@@ -1004,7 +1051,7 @@ public class Model extends JPanel implements ActionListener {
         public void mouseMoved(MouseEvent event){
             cor_x = event.getX();
             cor_y = event.getY();
-        //    System.out.println(String.format("x: %d y: %d",cor_x,cor_y));
+            System.out.println(String.format("x: %d y: %d",cor_x,cor_y));
         }
     }
 
