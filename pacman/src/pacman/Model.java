@@ -3,6 +3,7 @@ package pacman;
 import java.awt.*;
 
 import java.awt.event.*;
+import java.awt.event.MouseMotionListener;
 import java.io.IOException;
 import java.net.URL;
 
@@ -93,6 +94,7 @@ public class Model extends JPanel implements ActionListener {
         loadHighScore();
         initVariables();
         addMouseListener(handler);
+        addMouseMotionListener(handler);
         addKeyListener(new TAdapter());
         setFocusable(true);
         initGame();
@@ -333,25 +335,35 @@ public class Model extends JPanel implements ActionListener {
         g2d.drawString(info3, (SCREEN_SIZE)/4, 200);
         g2d.drawString(info4, (SCREEN_SIZE)/4, 250);
         //buat 3 rock paper scissor button
-        ImageButton buttonRock = new ImageButton(SCREEN_SIZE/3 - 148, 2*SCREEN_SIZE/3, 100, 100,
+        ImageButton buttonRock = new ImageButton(SCREEN_SIZE/3 - 210, 2*SCREEN_SIZE/3-80, 200, 200,
                                                 loadImage("Rock1.png"), 0);
-        ImageButton buttonPaper = new ImageButton(SCREEN_SIZE/3 + 74, 2*SCREEN_SIZE/3, 100, 100,
+        ImageButton buttonPaper = new ImageButton(SCREEN_SIZE/3 + 12, 2*SCREEN_SIZE/3-80, 200, 200,
                                                 loadImage("Papper1.png"), 1);
-        ImageButton buttonScissor = new ImageButton(2*SCREEN_SIZE/3 + 74, 2*SCREEN_SIZE/3, 100, 100,
+        ImageButton buttonScissor = new ImageButton(2*SCREEN_SIZE/3 + 12, 2*SCREEN_SIZE/3-80, 200, 200,
                                                 loadImage("Scissor1.png"), 2);
         Image rocImage,papImage,sciImage;
         g2d.setColor(Color.yellow);
-        g2d.setFont(gamerFont);
+        g2d.setFont(smollFont);
         rocImage = rockButton[0];
         papImage = papperButton[0];
         sciImage = scissorButton[0];
-        if(handler.cor_x >= SCREEN_SIZE/3 - 148 && handler.cor_x <= SCREEN_SIZE/3-48 && handler.cor_y >= 2*SCREEN_SIZE/3 && handler.cor_y <= 2*SCREEN_SIZE/3) {
-            rocImage = rockButton[1];
-            System.out.println("MASUK BATU GES");
+        if(handler.cor_y>= 398&& handler.cor_y <=600) {
+            if (handler.cor_x >= 30 && handler.cor_x <= 229) {
+            //    System.out.println("ontop of rock");
+                rocImage = rockButton[1];
+            }
+            else if(handler.cor_x >= 251 && handler.cor_x <= 451){
+                papImage = papperButton[1];
+           //     System.out.println("ontop of papper");
+            }
+            else if(handler.cor_x >= 472 && handler.cor_x <= 692){
+                sciImage = scissorButton[1];
+           //     System.out.println("ontop of scissor");
+            }
         }
-        g2d.drawImage(rocImage,SCREEN_SIZE/3 - 148, 2*SCREEN_SIZE/3, 100, 100,this);
-        g2d.drawImage(papImage,SCREEN_SIZE/3 + 74, 2*SCREEN_SIZE/3, 100, 100,this);
-        g2d.drawImage(sciImage,2*SCREEN_SIZE/3 + 74, 2*SCREEN_SIZE/3, 100, 100,this);
+        g2d.drawImage(rocImage,SCREEN_SIZE/3 - 210, 2*SCREEN_SIZE/3-80, 200, 200,this);
+        g2d.drawImage(papImage,SCREEN_SIZE/3 + 12, 2*SCREEN_SIZE/3-80, 200, 200,this);
+        g2d.drawImage(sciImage,2*SCREEN_SIZE/3 + 12, 2*SCREEN_SIZE/3-80, 200, 200,this);
 //        gambar sir
 //        kalau diklik dan belum ambil jawaban
         if(handler.isClicking && !pickedAnswer){
@@ -422,7 +434,9 @@ public class Model extends JPanel implements ActionListener {
         String s = "Score: " + score;
         g.drawString(s, SCREEN_SIZE / 2 + 192, SCREEN_SIZE + 32);
         g.drawImage(heart,40,SCREEN_SIZE+2,this);
-        String StrLives = ""+ player.getLives();
+        int temp = player.getLives();
+        if(player.getLives() < 0) temp = 0;
+        String StrLives = ""+ temp;
         g.drawString(StrLives, SCREEN_SIZE/2 - 340, SCREEN_SIZE+32);
         String strLvl = "lvl "+lvlCounter;
         g.drawString(strLvl, SCREEN_SIZE/2 - 240, SCREEN_SIZE+32);
@@ -946,7 +960,7 @@ public class Model extends JPanel implements ActionListener {
     }
 
     //mouse listener
-    static class MouseHandler implements MouseListener{
+    static class MouseHandler implements MouseListener,MouseMotionListener{
         private int cor_x, cor_y;
         private boolean isClicking = false;
         public MouseHandler(){
@@ -977,14 +991,20 @@ public class Model extends JPanel implements ActionListener {
 
         @Override
         public void mouseEntered(MouseEvent event) {
-//            System.out.print(String.format("entered at %d %d\n", event.getX(), event.getY()));
-            System.out.print(String.format("entered at %d %d\n", event.getX(), event.getY()));
-            cor_x = event.getX();
-            cor_y = event.getY();
         }
 
         @Override
         public void mouseExited(MouseEvent event){
+        }
+        @Override
+        public void mouseDragged(MouseEvent event){
+
+        }
+        @Override
+        public void mouseMoved(MouseEvent event){
+            cor_x = event.getX();
+            cor_y = event.getY();
+        //    System.out.println(String.format("x: %d y: %d",cor_x,cor_y));
         }
     }
 
