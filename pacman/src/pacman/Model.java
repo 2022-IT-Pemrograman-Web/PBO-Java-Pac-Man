@@ -6,7 +6,6 @@ import java.awt.event.*;
 import java.io.IOException;
 import java.net.URL;
 
-import javax.swing.*;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -73,7 +72,6 @@ public class Model extends JPanel implements ActionListener {
     private final short[] levelData = new short[225];
 
     private final int[] validSpeeds = {1, 2, 3, 4, 6, 8};
-    private final int maxSpeed = 6;
 
     private int currentSpeed = 3;
     private short[] screenData;
@@ -408,7 +406,6 @@ public class Model extends JPanel implements ActionListener {
                 continuePlaySuit = false;
                 if(verdictDeatch!=resultSuit.draw){
                     currentState = GameState.inGame;
-                    continuePlaySuit = false;
                 }
                 verdictDeatch = resultSuit.notYet;
 
@@ -458,6 +455,7 @@ public class Model extends JPanel implements ActionListener {
                 N_GHOSTS++;
             }
 
+            int maxSpeed = 5;
             if (currentSpeed < maxSpeed) {
                 currentSpeed++;
             }
@@ -704,6 +702,7 @@ public class Model extends JPanel implements ActionListener {
         verdictDeatch = resultSuit.notYet;
         pickedAnswer = false;
         continuePlaySuit = false;
+        powerList.clear();
     }
 
     private void initLevel() {
@@ -944,7 +943,7 @@ public class Model extends JPanel implements ActionListener {
     }
 
     //mouse listener
-    class MouseHandler implements MouseListener{
+    static class MouseHandler implements MouseListener{
         private int cor_x, cor_y;
         private boolean isClicking = false;
         public MouseHandler(){
@@ -957,8 +956,6 @@ public class Model extends JPanel implements ActionListener {
         public void mouseClicked(MouseEvent event){
             cor_x = event.getX();
             cor_y = event.getY();
-//            isClicking = true;
-//            System.out.print(String.format("Clicked at %d %d\n", event.getX(), event.getY()));
         }
 
         @Override
@@ -966,12 +963,10 @@ public class Model extends JPanel implements ActionListener {
             isClicking = true;
             cor_x = event.getX();
             cor_y = event.getY();
-            System.out.print(String.format("pressed at %d %d\n", event.getX(), event.getY()));
         }
 
         @Override
         public void mouseReleased(MouseEvent event){
-//            System.out.print(String.format("released at %d %d\n", event.getX(), event.getY()));
             isClicking = false;
             cor_x = event.getX();
             cor_y = event.getY();
@@ -979,13 +974,10 @@ public class Model extends JPanel implements ActionListener {
 
         @Override
         public void mouseEntered(MouseEvent event){
-//            System.out.print(String.format("entered at %d %d\n", event.getX(), event.getY()));
         }
 
         @Override
         public void mouseExited(MouseEvent event){
-//            isClicking = false;
-//            System.out.print(String.format("exited at %d %d\n", event.getX(), event.getX()));
         }
     }
 
