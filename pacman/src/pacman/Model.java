@@ -6,7 +6,7 @@ import java.awt.event.*;
 import java.awt.event.MouseMotionListener;
 import java.io.IOException;
 import java.net.URL;
-
+import java.util.concurrent.TimeUnit;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -242,7 +242,7 @@ public class Model extends JPanel implements ActionListener {
         g2d.drawImage(titleImage,SCREEN_SIZE/2 - 266, SCREEN_SIZE/4, 532,96,this);
         ImageButton buttonStart = new ImageButton(SCREEN_SIZE/2 - 130, SCREEN_SIZE/2, 574 ,96,
                 loadImage("Start1.png"), 0);
-        ImageButton buttonAbort = new ImageButton(SCREEN_SIZE/2 - 130, SCREEN_SIZE/2 + 96, 574,96,
+        ImageButton buttonAbout = new ImageButton(SCREEN_SIZE/2 - 130, SCREEN_SIZE/2 + 96, 574,96,
                 loadImage("About1.png"), 1);
         ImageButton buttonExit = new ImageButton(SCREEN_SIZE/2 - 130, SCREEN_SIZE/2 + 192, 574,96,
                 loadImage("Exit1.png"), 2);
@@ -260,6 +260,41 @@ public class Model extends JPanel implements ActionListener {
             staImage = startButton[0];
             aboImage = aboutButton[0];
             exiImage = exitButton[1];
+        }
+        if(handler.cor_x>= 246&& handler.cor_x <=463) {
+            if (handler.cor_y >= 372 && handler.cor_y <= 443) {
+                //    System.out.println("ontop of rock");
+                staImage = startButton[1];
+                aboImage = aboutButton[0];
+                exiImage = exitButton[0];
+                selectedButtonIntro = 0;
+            }
+            else if(handler.cor_y >= 473 && handler.cor_y <= 543){
+                staImage = startButton[0];
+                aboImage = aboutButton[1];
+                exiImage = exitButton[0];
+                selectedButtonIntro= 1;
+            }
+            else if(handler.cor_y >= 564 && handler.cor_y <= 640){
+                staImage = startButton[0];
+                aboImage = aboutButton[0];
+                exiImage = exitButton[1];
+                selectedButtonIntro = 2;
+            }
+        }
+        if(handler.isClicking){
+            if(buttonStart.isClicked(handler.cor_x, handler.cor_y)){
+                System.out.println("START DI KLIK");
+                currentState = GameState.inGame;
+                initGame();
+            }
+            else if(buttonAbout.isClicked(handler.cor_x, handler.cor_y)){
+                System.out.println("ABOUT DI KLIK");
+                currentState = GameState.aboutScreen;
+            }else if(buttonExit.isClicked(handler.cor_x, handler.cor_y)){
+                System.out.println("Exit KLIK");
+                System.exit(0);
+            }
         }
         g2d.drawImage(staImage,SCREEN_SIZE/2 - 130, SCREEN_SIZE/2, 574 ,96,this);
         g2d.drawImage(aboImage,SCREEN_SIZE/2 - 130, SCREEN_SIZE/2 + 96, 574,96,this);
@@ -314,7 +349,7 @@ public class Model extends JPanel implements ActionListener {
                 selectedButtonPause = 2;
             }
         }
-        if(handler.isClicking && !pickedAnswer){
+        if(handler.isClicking){
             if(buttonCon.isClicked(handler.cor_x, handler.cor_y)){
                 System.out.println("CON DI KLIK");
                 currentState = GameState.inGame;
