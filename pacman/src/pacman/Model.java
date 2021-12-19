@@ -37,7 +37,7 @@ public class Model extends JPanel implements ActionListener {
     private int lvlCounter = 1;
     private int N_GHOSTS = 1;
     private int score;
-    private int score_before = 0; //untuk spawn powerup
+    private int scoreBefore = 0; //untuk spawn powerup
     private int highScore;
     private URL urlHeart;
     private Image heart;
@@ -79,13 +79,13 @@ public class Model extends JPanel implements ActionListener {
     private short[] screenData;
     private Timer timer;
     private boolean pickedAnswer = false;
-    private enum resultSuit{
-        win,
-        draw,
-        lose,
-        notYet
+    private enum ResultSuit {
+        WIN,
+        DRAW,
+        LOSE,
+        NOT_YET
     }
-    private resultSuit verdictDeatch = resultSuit.notYet;
+    private ResultSuit verdictDeatch = ResultSuit.NOT_YET;
     private MouseHandler handler = new MouseHandler();
     private boolean continuePlaySuit = false;
 
@@ -474,37 +474,37 @@ public class Model extends JPanel implements ActionListener {
             }
         }
         //kalau udah ambi jawaban tapi belum simulasi hasil
-        if(pickedAnswer && (verdictDeatch == resultSuit.notYet)){
+        if(pickedAnswer && (verdictDeatch == ResultSuit.NOT_YET)){
             int res = numGenerator.nextInt(3);
             System.out.println(res);
             if(chosenvalue - res == 1){
                 //WIN CERITANYA
-                verdictDeatch = resultSuit.win;
+                verdictDeatch = ResultSuit.WIN;
                 player.increaseLives();
             }else if(res - chosenvalue == 2){
-                verdictDeatch = resultSuit.win;
+                verdictDeatch = ResultSuit.WIN;
                 player.increaseLives();
             } else if(res == chosenvalue){
                 //DRAW CERITANYA
-                verdictDeatch = resultSuit.draw;
+                verdictDeatch = ResultSuit.DRAW;
             }else{
                 //YAH KALAH
-                verdictDeatch = resultSuit.lose;
+                verdictDeatch = ResultSuit.LOSE;
                 dying = true;
             }
         }
         //kalau udah ada result dan di klik lagi, baru lanjut main
-        if(verdictDeatch != resultSuit.notYet){
+        if(verdictDeatch != ResultSuit.NOT_YET){
             switch (verdictDeatch){
-                case win:
+                case WIN:
                     String win = "YOU WIN, YOU MAY LIVE ONCE AGAIN";
                     g2d.drawString(win, (SCREEN_SIZE)/4, 300);
                     break;
-                case draw:
+                case DRAW:
                     String draw = "A DRAW. CLOSE ONE. TRY AGAIN";
                     g2d.drawString(draw, (SCREEN_SIZE)/4, 300);
                     break;
-                case lose:
+                case LOSE:
                     String lose = "YOU LOSE";
                     g2d.drawString(lose, (SCREEN_SIZE)/4, 300);
                     break;
@@ -514,10 +514,10 @@ public class Model extends JPanel implements ActionListener {
             if(continuePlaySuit){
                 pickedAnswer = false;
                 continuePlaySuit = false;
-                if(verdictDeatch!=resultSuit.draw){
+                if(verdictDeatch!= ResultSuit.DRAW){
                     currentState = GameState.INGAME;
                 }
-                verdictDeatch = resultSuit.notYet;
+                verdictDeatch = ResultSuit.NOT_YET;
 
             }
         }
@@ -749,10 +749,10 @@ public class Model extends JPanel implements ActionListener {
 
     private void powerUpLogic(Graphics2D g2d){
         //cek spawn
-        if(((score-score_before) >= 250 ) & score > 0){
+        if(((score- scoreBefore) >= 250 ) & score > 0){
             //spawn the power up
-            score_before = score;
-            System.out.println(score_before);
+            scoreBefore = score;
+            System.out.println(scoreBefore);
             int powerKind = numGenerator.nextInt(3);
             switch (powerKind) {
                 case 0 :
@@ -808,8 +808,8 @@ public class Model extends JPanel implements ActionListener {
         lvlCounter = 1;
         N_GHOSTS = 1;
         scoreWeight = 1;
-        score_before = 0;
-        verdictDeatch = resultSuit.notYet;
+        scoreBefore = 0;
+        verdictDeatch = ResultSuit.NOT_YET;
         pickedAnswer = false;
         continuePlaySuit = false;
         powerList.clear();
@@ -891,7 +891,7 @@ public class Model extends JPanel implements ActionListener {
         dying = false;
         pickedAnswer = false;
         scoreWeight = 1;
-        verdictDeatch = resultSuit.notYet;
+        verdictDeatch = ResultSuit.NOT_YET;
         continuePlaySuit = false;
     }
 
