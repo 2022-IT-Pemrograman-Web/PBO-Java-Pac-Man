@@ -424,7 +424,7 @@ public class Model extends JPanel implements ActionListener {
 
         g2d.setColor(Color.yellow);
         g2d.setFont(smollFont);
-        int chosenvalue = 0;
+        int chosenValue = 0;
         g2d.drawString(info1, (SCREEN_SIZE)/4, 100);
         g2d.drawString(info2, (SCREEN_SIZE)/4, 150);
         g2d.drawString(info3, (SCREEN_SIZE)/4, 200);
@@ -460,17 +460,17 @@ public class Model extends JPanel implements ActionListener {
 //        kalau diklik dan belum ambil jawaban
         if(handler.isClicking && !pickedAnswer){
             if(buttonRock.isClicked(handler.cor_x, handler.cor_y)){
-                chosenvalue = buttonRock.getReturnValue();
-                System.out.println(chosenvalue);
+                chosenValue = buttonRock.getReturnValue();
+                System.out.println(chosenValue);
                 pickedAnswer = true;
             }
             else if(buttonPaper.isClicked(handler.cor_x, handler.cor_y)){
-                chosenvalue = buttonRock.getReturnValue();
-                System.out.println(chosenvalue);
+                chosenValue = buttonRock.getReturnValue();
+                System.out.println(chosenValue);
                 pickedAnswer = true;
             }else if(buttonScissor.isClicked(handler.cor_x, handler.cor_y)){
-                chosenvalue = buttonRock.getReturnValue();
-                System.out.println(chosenvalue);
+                chosenValue = buttonRock.getReturnValue();
+                System.out.println(chosenValue);
                 pickedAnswer = true;
             }
         }
@@ -478,14 +478,14 @@ public class Model extends JPanel implements ActionListener {
         if(pickedAnswer && (verdictDeatch == ResultSuit.NOT_YET)){
             int res = numGenerator.nextInt(3);
             System.out.println(res);
-            if(chosenvalue - res == 1){
+            if(chosenValue - res == 1){
                 //WIN CERITANYA
                 verdictDeatch = ResultSuit.WIN;
                 player.increaseLives();
-            }else if(res - chosenvalue == 2){
+            }else if(res - chosenValue == 2){
                 verdictDeatch = ResultSuit.WIN;
                 player.increaseLives();
-            } else if(res == chosenvalue){
+            } else if(res == chosenValue){
                 //DRAW CERITANYA
                 verdictDeatch = ResultSuit.DRAW;
             }else{
