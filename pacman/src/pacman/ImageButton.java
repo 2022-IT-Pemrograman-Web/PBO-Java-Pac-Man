@@ -13,10 +13,6 @@ public class ImageButton extends ImageObject{
     }
 
     public boolean isClicked(int mx, int my){
-        System.out.println(String.format("this boi [%d] is on %d %d", returnValue,x, y));
-        System.out.println(String.format("x: %d --> %d <-- %d", x, mx, x+width));
-        System.out.println(String.format("y: %d --> %d <-- %d", y, my, y+height));
-        System.out.println((x <= mx && mx <= (x + width)) && (y <= my && my <= (y + height)));
         return (x <= mx && mx <= (x + width)) && (y <= my && my <= (y + height));
     }
 
