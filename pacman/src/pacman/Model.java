@@ -254,7 +254,6 @@ public class Model extends JPanel implements ActionListener {
 
         if(handler.cor_x >= 244 && handler.cor_x <= 470) {
             if (handler.cor_y>= 372&& handler.cor_y <= 444) {
-                //    System.out.println("ontop of rock");
                 staImage = startButton[1];
                 aboImage = aboutButton[0];
                 exiImage = exitButton[0];
@@ -265,14 +264,12 @@ public class Model extends JPanel implements ActionListener {
                 aboImage = aboutButton[1];
                 exiImage = exitButton[0];
                 selectedButtonIntro = 1;
-                //     System.out.println("ontop of papper");
             }
             else if(handler.cor_y >= 552 && handler.cor_y <= 648){
                 staImage = startButton[0];
                 aboImage = aboutButton[0];
                 exiImage = exitButton[1];
                 selectedButtonIntro = 2;
-                //     System.out.println("ontop of scissor");
             }
         }
 
@@ -304,16 +301,13 @@ public class Model extends JPanel implements ActionListener {
             }
         }
         if(strtbutt){
-            System.out.println("START BUTTON CLICKED");
             currentState = GameState.inGame;
             initGame();
         }
         else if(aboutbutt){
-            System.out.println("ABOUT BUTTON CLICKED");
             currentState = GameState.aboutScreen;
         }
         else if(exitbutt){
-            System.out.println("EXIT BUTTON CLICKED");
             System.exit(0);
         }
         g2d.drawImage(staImage,SCREEN_SIZE/2 - 130, SCREEN_SIZE/2, 574 ,96,this);
@@ -350,7 +344,6 @@ public class Model extends JPanel implements ActionListener {
         }
         if(handler.cor_x>= 246&& handler.cor_x <=463) {
             if (handler.cor_y >= 372 && handler.cor_y <= 443) {
-                //    System.out.println("ontop of rock");
                 conImage = continueButton[1];
                 resImage = restartButton[0];
                 menImage = menuButton[0];
@@ -371,17 +364,14 @@ public class Model extends JPanel implements ActionListener {
         }
         if(handler.isClicking && !pickedAnswer){
             if(buttonCon.isClicked(handler.cor_x, handler.cor_y)){
-                System.out.println("CON DI KLIK");
                 currentState = GameState.inGame;
                 handler.isClicking = false;
             }
             else if(buttonRes.isClicked(handler.cor_x, handler.cor_y)){
-                System.out.println("RES DI KLIK");
                 currentState = GameState.inGame;
                 initGame();
                 handler.isClicking = false;
             }else if(buttonMen.isClicked(handler.cor_x, handler.cor_y)){
-                System.out.println("MENU KLIK");
                 currentState = GameState.introScreen;
                 handler.isClicking = false;
             }
@@ -417,7 +407,6 @@ public class Model extends JPanel implements ActionListener {
         g2d.drawString(gameOverString, (SCREEN_SIZE)/5, 300);
         g2d.drawString(scoreString, (SCREEN_SIZE)/5, 400);
         if(newHighScoreb){
-            System.out.print("JALAN\n");
             g2d.setColor(Color.yellow);
             g2d.setFont(gamerFontSmall);
             g2d.drawString(newHighScore,(SCREEN_SIZE)/5-100,500);
@@ -454,16 +443,13 @@ public class Model extends JPanel implements ActionListener {
         sciImage = scissorButton[0];
         if(handler.cor_y>= 398&& handler.cor_y <=600) {
             if (handler.cor_x >= 30 && handler.cor_x <= 229) {
-                //    System.out.println("ontop of rock");
                 rocImage = rockButton[1];
             }
             else if(handler.cor_x >= 251 && handler.cor_x <= 451){
                 papImage = papperButton[1];
-                //     System.out.println("ontop of papper");
             }
             else if(handler.cor_x >= 472 && handler.cor_x <= 692){
                 sciImage = scissorButton[1];
-                //     System.out.println("ontop of scissor");
             }
         }
         g2d.drawImage(rocImage,SCREEN_SIZE/3 - 210, 2*SCREEN_SIZE/3-80, 200, 200,this);
@@ -473,18 +459,15 @@ public class Model extends JPanel implements ActionListener {
 //        kalau diklik dan belum ambil jawaban
         if(handler.isClicking && !pickedAnswer){
             if(buttonRock.isClicked(handler.cor_x, handler.cor_y)){
-                System.out.println("BATU DI KLIK");
                 chosenvalue = buttonRock.getReturnValue();
                 System.out.println(chosenvalue);
                 pickedAnswer = true;
             }
             else if(buttonPaper.isClicked(handler.cor_x, handler.cor_y)){
-                System.out.println("PAPER DI KLIK");
                 chosenvalue = buttonRock.getReturnValue();
                 System.out.println(chosenvalue);
                 pickedAnswer = true;
             }else if(buttonScissor.isClicked(handler.cor_x, handler.cor_y)){
-                System.out.println("GUNTING KLIK");
                 chosenvalue = buttonRock.getReturnValue();
                 System.out.println(chosenvalue);
                 pickedAnswer = true;
@@ -497,21 +480,17 @@ public class Model extends JPanel implements ActionListener {
             if(chosenvalue - res == 1){
                 //WIN CERITANYA
                 verdictDeatch = resultSuit.win;
-                System.out.println("YEY MENANG SUIT");
                 player.increaseLives();
             }else if(res - chosenvalue == 2){
                 verdictDeatch = resultSuit.win;
-                System.out.println("YEY MENANG SUIT");
                 player.increaseLives();
             } else if(res == chosenvalue){
                 //DRAW CERITANYA
                 verdictDeatch = resultSuit.draw;
-                System.out.println("DRAW LOLL");
             }else{
                 //YAH KALAH
                 verdictDeatch = resultSuit.lose;
                 dying = true;
-                System.out.println("kalah LOLL");
             }
         }
         //kalau udah ada result dan di klik lagi, baru lanjut main
@@ -602,12 +581,10 @@ public class Model extends JPanel implements ActionListener {
         player.decreaseLives();
         lives = player.getLives();
         if (player.getLives() <= 0) {
-            System.out.println("MAIN LAST CHANCE");
             if(player.getLives() == 0){
                 currentState=GameState.oneLastChance;
             }
             else{
-                System.out.println("MATI");
                 SoundPlayer.playSound("death.wav");
                 currentState = GameState.gameOver;
             }
@@ -1120,7 +1097,6 @@ public class Model extends JPanel implements ActionListener {
         public void mouseMoved(MouseEvent event){
             cor_x = event.getX();
             cor_y = event.getY();
-            System.out.println(String.format("x: %d y: %d",cor_x,cor_y));
         }
     }
 
