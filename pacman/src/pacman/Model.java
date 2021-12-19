@@ -60,16 +60,16 @@ public class Model extends JPanel implements ActionListener {
     private Ghost[] ghosts;
     private Vector<PowerUp> powerList = new Vector<>();
     Random numGenerator = new Random();
-    private enum GameState{
-        inGame,
-        introScreen,
-        gameOver,
-        aboutScreen,
-        pauseScreen,
-        oneLastChance
+    private enum GameState {
+        INGAME,
+        INTROSCREEN,
+        GAMEOVER,
+        ABOUTSCREEN,
+        PAUSESCREEN,
+        ONELASTCHANCE
     }
 
-    private GameState currentState = GameState.introScreen;
+    private GameState currentState = GameState.INTROSCREEN;
 
     private final short[] levelData = new short[225];
 
@@ -301,11 +301,11 @@ public class Model extends JPanel implements ActionListener {
             }
         }
         if(strtbutt){
-            currentState = GameState.inGame;
+            currentState = GameState.INGAME;
             initGame();
         }
         else if(aboutbutt){
-            currentState = GameState.aboutScreen;
+            currentState = GameState.ABOUTSCREEN;
         }
         else if(exitbutt){
             System.exit(0);
@@ -364,15 +364,15 @@ public class Model extends JPanel implements ActionListener {
         }
         if(handler.isClicking && !pickedAnswer){
             if(buttonCon.isClicked(handler.cor_x, handler.cor_y)){
-                currentState = GameState.inGame;
+                currentState = GameState.INGAME;
                 handler.isClicking = false;
             }
             else if(buttonRes.isClicked(handler.cor_x, handler.cor_y)){
-                currentState = GameState.inGame;
+                currentState = GameState.INGAME;
                 initGame();
                 handler.isClicking = false;
             }else if(buttonMen.isClicked(handler.cor_x, handler.cor_y)){
-                currentState = GameState.introScreen;
+                currentState = GameState.INTROSCREEN;
                 handler.isClicking = false;
             }
         }
@@ -515,7 +515,7 @@ public class Model extends JPanel implements ActionListener {
                 pickedAnswer = false;
                 continuePlaySuit = false;
                 if(verdictDeatch!=resultSuit.draw){
-                    currentState = GameState.inGame;
+                    currentState = GameState.INGAME;
                 }
                 verdictDeatch = resultSuit.notYet;
 
@@ -582,11 +582,11 @@ public class Model extends JPanel implements ActionListener {
         lives = player.getLives();
         if (player.getLives() <= 0) {
             if(player.getLives() == 0){
-                currentState=GameState.oneLastChance;
+                currentState= GameState.ONELASTCHANCE;
             }
             else{
                 SoundPlayer.playSound("death.wav");
-                currentState = GameState.gameOver;
+                currentState = GameState.GAMEOVER;
             }
         }
         else{
@@ -598,7 +598,7 @@ public class Model extends JPanel implements ActionListener {
 
     private void detectDeath(int id) {
     	//detect if pacman close to ghost with index id
-        if (ghosts[id].detectPlayerCollision(player) && currentState == GameState.inGame) {
+        if (ghosts[id].detectPlayerCollision(player) && currentState == GameState.INGAME) {
             if(!player.canEatGhosts)
                 dying = true;
             else
@@ -908,22 +908,22 @@ public class Model extends JPanel implements ActionListener {
         drawScore(g2d);
         drawHighScore(g2d);
         switch (currentState){
-            case inGame:
+            case INGAME:
                 playGame(g2d);
                 break;
-            case aboutScreen:
+            case ABOUTSCREEN:
                 showAboutScreen(g2d);
                 break;
-            case introScreen:
+            case INTROSCREEN:
                 showIntroScreen(g2d);
                 break;
-            case pauseScreen:
+            case PAUSESCREEN:
                 showPauseScreen(g2d);
                 break;
-            case gameOver:
+            case GAMEOVER:
                 showGameOverScreen(g2d);
                 break;
-            case oneLastChance:
+            case ONELASTCHANCE:
                 playOneLastChance(g2d);
         }
 
@@ -941,39 +941,39 @@ public class Model extends JPanel implements ActionListener {
             int key = e.getKeyCode();
 
             switch (currentState){
-                case inGame:
+                case INGAME:
                     if (!player.getInput(key)) { //if player doesn't get a movement input
                         if (key == KeyEvent.VK_ESCAPE && timer.isRunning()) {
-                            currentState = GameState.introScreen;
+                            currentState = GameState.INTROSCREEN;
                         }
                     }
                     if(key == KeyEvent.VK_ESCAPE){
                         SoundPlayer.playSound("esc.wav");
-                        currentState = GameState.pauseScreen;
+                        currentState = GameState.PAUSESCREEN;
                     }
                     break;
-                case aboutScreen:
+                case ABOUTSCREEN:
                     if(key == KeyEvent.VK_ENTER) {
                         selectedButtonIntro = 0;
-                        currentState = GameState.introScreen;
+                        currentState = GameState.INTROSCREEN;
                         repaint();
                     }
                     if(key == KeyEvent.VK_ESCAPE){
                         SoundPlayer.playSound("esc.wav");
                         selectedButtonIntro = 0;
-                        currentState =GameState.introScreen;
+                        currentState = GameState.INTROSCREEN;
                     }
                     break;
-                case introScreen:
+                case INTROSCREEN:
                     if (key == KeyEvent.VK_ENTER) {
                         SoundPlayer.playSound("enter.wav");
                         if(selectedButtonIntro % 3 == 0) {
-                            currentState = GameState.inGame;
+                            currentState = GameState.INGAME;
                             SoundPlayer.playSound("bruh.wav");
                             initGame();
                         }
                         if(selectedButtonIntro % 3 == 1){
-                            currentState = GameState.aboutScreen;
+                            currentState = GameState.ABOUTSCREEN;
                         }
                         if(selectedButtonIntro % 3 == 2){
                             System.exit(0);
@@ -998,23 +998,23 @@ public class Model extends JPanel implements ActionListener {
                         }
                     }
                     break;
-                case pauseScreen:
+                case PAUSESCREEN:
                     if (key == KeyEvent.VK_ENTER) {
                         SoundPlayer.playSound("enter.wav");
                         if(selectedButtonPause % 3 == 0) {
-                            currentState = GameState.inGame;
+                            currentState = GameState.INGAME;
                         }
                         if(selectedButtonPause % 3 == 1){
-                            currentState = GameState.inGame;
+                            currentState = GameState.INGAME;
                             initGame();
                         }
                         if(selectedButtonPause % 3 == 2){
-                            currentState = GameState.introScreen;
+                            currentState = GameState.INTROSCREEN;
                         }
                     }
                     if (key == KeyEvent.VK_ESCAPE){
                         SoundPlayer.playSound("esc.wav");
-                        currentState = GameState.inGame;
+                        currentState = GameState.INGAME;
                     }
                     if (key == KeyEvent.VK_UP) {
                         SoundPlayer.playSound("topdown.wav");
@@ -1031,20 +1031,20 @@ public class Model extends JPanel implements ActionListener {
                         }
                     }
                     break;
-                case oneLastChance:
+                case ONELASTCHANCE:
                     if(key == KeyEvent.VK_ENTER){
                         continuePlaySuit = true;
                     }
                     break;
-                case gameOver:
+                case GAMEOVER:
                     if (key == KeyEvent.VK_ENTER) {
                         SoundPlayer.playSound("enter.wav");
-                        currentState = GameState.introScreen;
+                        currentState = GameState.INTROSCREEN;
                         initGame();
                     }
                     else if(key == KeyEvent.VK_SPACE){
                         SoundPlayer.playSound("esc.wav");
-                        currentState = GameState.introScreen;
+                        currentState = GameState.INTROSCREEN;
                         initGame();
                     }
                     break;
