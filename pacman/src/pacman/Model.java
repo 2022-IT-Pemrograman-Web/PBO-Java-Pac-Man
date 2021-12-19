@@ -60,6 +60,7 @@ public class Model extends JPanel implements ActionListener {
     private Ghost[] ghosts;
     private Vector<PowerUp> powerList = new Vector<>();
     Random numGenerator = new Random();
+    Graphics2D g2d;
     private enum GameState {
         IN_GAME,
         INTRO_SCREEN,
@@ -223,21 +224,21 @@ public class Model extends JPanel implements ActionListener {
         timer.start();
     }
 
-    private void playGame(Graphics2D g2d) {
+    private void playGame() {
 
         if (dying) {
             death();
         }
         else {
             movePacman();
-            powerUpLogic(g2d);
-            drawPacman(g2d);
-            moveGhosts(g2d);
+            powerUpLogic();
+            drawPacman();
+            moveGhosts();
             checkMaze();
         }
     }
 
-    private void showIntroScreen(Graphics2D g2d) {
+    private void showIntroScreen() {
         Image aboImage = aboutButton[0];
         Image staImage = startButton[0];
         Image exiImage = exitButton[0];
@@ -315,7 +316,7 @@ public class Model extends JPanel implements ActionListener {
         g2d.drawImage(exiImage,SCREEN_SIZE/2 - 130, SCREEN_SIZE/2 + 192, 574,96,this);
     }
 
-    private void showPauseScreen(Graphics2D g2d) {
+    private void showPauseScreen() {
         Image conImage,resImage,menImage;
         g2d.setColor(Color.yellow);
         String pauseString = "Paused";
@@ -380,7 +381,7 @@ public class Model extends JPanel implements ActionListener {
         g2d.drawImage(resImage,SCREEN_SIZE/2 - 130, SCREEN_SIZE/2 + 96, 574,96,this);
         g2d.drawImage(menImage,SCREEN_SIZE/2 - 130, SCREEN_SIZE/2 + 192, 574,96,this);
     }
-    private void showAboutScreen(Graphics2D g2d) {
+    private void showAboutScreen() {
         Font smallGamerFont = FontLoader.getFontFromFile("ARCADECLASSIC", 32f);
         String aboutText = "NOT SO NORMAL PACMAN!";
         String aboutText2 = "Built By ";
@@ -398,7 +399,7 @@ public class Model extends JPanel implements ActionListener {
         g2d.drawString(aboutText6, (SCREEN_SIZE)/5- 100, 380);
     }
 
-    private void showGameOverScreen(Graphics2D g2d){
+    private void showGameOverScreen(){
         String gameOverString = "Game Over";
         String scoreString = "Your Score " + score;
         String newHighScore = "Congrats new highscore!";
@@ -414,7 +415,7 @@ public class Model extends JPanel implements ActionListener {
         }
     }
 
-    private void playOneLastChance(Graphics2D g2d){
+    private void playOneLastChance(){
         //set msg
         String info1 = "You are in the limbo";
         String info2 = "If you win in this battle";
@@ -527,21 +528,21 @@ public class Model extends JPanel implements ActionListener {
         g.setFont(SMALL_FONT);
         g.setColor(new Color(5, 181, 79));
         String s = "Score: " + score;
-        g.drawString(s, SCREEN_SIZE / 2 + 192, SCREEN_SIZE + 32);
-        g.drawImage(heart,40,SCREEN_SIZE+2,this);
+        g2d.drawString(s, SCREEN_SIZE / 2 + 192, SCREEN_SIZE + 32);
+        g2d.drawImage(heart,40,SCREEN_SIZE+2,this);
         int temp = player.getLives();
         if(player.getLives() < 0) temp = 0;
         String StrLives = ""+ temp;
-        g.drawString(StrLives, SCREEN_SIZE/2 - 340, SCREEN_SIZE+32);
+        g2d.drawString(StrLives, SCREEN_SIZE/2 - 340, SCREEN_SIZE+32);
         String strLvl = "lvl "+lvlCounter;
-        g.drawString(strLvl, SCREEN_SIZE/2 - 240, SCREEN_SIZE+32);
+        g2d.drawString(strLvl, SCREEN_SIZE/2 - 240, SCREEN_SIZE+32);
     }
 
     private void drawHighScore(Graphics2D g) {
         g.setFont(SMALL_FONT);
         g.setColor(new Color(5, 181, 79));
         String s = "High Score: " + highScore;
-        g.drawString(s, SCREEN_SIZE / 2 - 120, SCREEN_SIZE + 32);
+        g2d.drawString(s, SCREEN_SIZE / 2 - 120, SCREEN_SIZE + 32);
     }
     private void checkMaze() {
 
@@ -609,11 +610,11 @@ public class Model extends JPanel implements ActionListener {
         }
     }
     
-    private void drawEntity(Graphics2D g2d, Entity en) {
+    private void drawEntity(Entity en) {
     	g2d.drawImage(en.getCurrentImage(), en.x + 2, en.y + 2, this);
     }
 
-    private void drawImageObject(Graphics2D g2d, ImageObject io){
+    private void drawImageObject(ImageObject io){
         g2d.drawImage(io.img, io.x + 2, io.y + 2, this);
     }
 
@@ -646,7 +647,7 @@ public class Model extends JPanel implements ActionListener {
         }
     }
 
-    private void moveGhosts(Graphics2D g2d) {
+    private void moveGhosts() {
 
         int pos;
 
@@ -668,12 +669,12 @@ public class Model extends JPanel implements ActionListener {
             else {
                 ghosts[i].respawnIfReady();
             }
-            drawGhost(g2d, i);
+            drawGhost(i);
         }
     }
 
-    private void drawGhost(Graphics2D g2d, int id) {
-        drawEntity(g2d,ghosts[id]);
+    private void drawGhost(int id) {
+        drawEntity(ghosts[id]);
     }
 
     private void movePacman() {
@@ -704,11 +705,11 @@ public class Model extends JPanel implements ActionListener {
         fixEntityPos(player);
     }
 
-    private void drawPacman(Graphics2D g2d) {
-        drawEntity(g2d, player);
+    private void drawPacman() {
+        drawEntity(player);
     }
 
-    private void drawMaze(Graphics2D g2d) {
+    private void drawMaze() {
 
         short i = 0;
         int x, y;
@@ -747,7 +748,7 @@ public class Model extends JPanel implements ActionListener {
         }
     }
 
-    private void powerUpLogic(Graphics2D g2d){
+    private void powerUpLogic(){
         //cek spawn
         if(((score- scoreBefore) >= 250 ) & score > 0){
             //spawn the power up
@@ -793,7 +794,7 @@ public class Model extends JPanel implements ActionListener {
 
             //draw it
             for(int i = 0;i<powerList.size();i++) {
-                drawImageObject(g2d, powerList.get(i));
+                drawImageObject(powerList.get(i));
             }
         }
     }
@@ -899,14 +900,14 @@ public class Model extends JPanel implements ActionListener {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        Graphics2D g2d = (Graphics2D) g;
+        g2d = (Graphics2D) g;
 
         g2d.setColor(Color.black);
         g2d.fillRect(0, 0, d.width, d.height);
 
-        drawMaze(g2d);
-        drawScore(g2d);
-        drawHighScore(g2d);
+        drawMaze();
+        drawScore();
+        drawHighScore();
         switch (currentState){
             case IN_GAME:
                 playGame(g2d);
