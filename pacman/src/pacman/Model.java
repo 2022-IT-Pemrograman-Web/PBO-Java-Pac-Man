@@ -22,10 +22,10 @@ import java.awt.Graphics2D;
 public class Model extends JPanel implements ActionListener {
 
     private Dimension d;
-    private final Font smallFont = new Font("Arial", Font.BOLD, 28);
-    private final Font gamerFont = FontLoader.getFontFromFile("ARCADECLASSIC", 62f);
-    private final Font smollFont = FontLoader.getFontFromFile("ARCADECLASSIC", 31f);
-    private final Font gamerFontSmall = FontLoader.getFontFromFile("ARCADECLASSIC", 48f);
+    private final Font SMALL_FONT = new Font("Arial", Font.BOLD, 28);
+    private final Font GAMER_FONT = FontLoader.getFontFromFile("ARCADECLASSIC", 62f);
+    private final Font TINY_FONT = FontLoader.getFontFromFile("ARCADECLASSIC", 31f);
+    private final Font GAMER_FONT_SMALL = FontLoader.getFontFromFile("ARCADECLASSIC", 48f);
     private SoundPlayer highScoreSound = new SoundPlayer("sheesh.wav");
     private boolean dying = false;
     private boolean newHighScoreb = false;
@@ -35,7 +35,7 @@ public class Model extends JPanel implements ActionListener {
     private final int MAX_GHOSTS = 12;
     private final int PACMAN_SPEED = 6;
     private int lvlCounter = 1;
-    private int N_GHOSTS = 1;
+    private int nGhosts = 1;
     private int score;
     private int scoreBefore = 0; //untuk spawn powerup
     private int highScore;
@@ -50,7 +50,7 @@ public class Model extends JPanel implements ActionListener {
     private Image[] menuButton;
     private Image[] rockButton;
     private Image[] scissorButton;
-    private Image[] papperButton;
+    private Image[] paperButton;
     private int selectedButtonIntro = 0;
     private int selectedButtonPause = 0;
 
@@ -61,15 +61,15 @@ public class Model extends JPanel implements ActionListener {
     private Vector<PowerUp> powerList = new Vector<>();
     Random numGenerator = new Random();
     private enum GameState {
-        INGAME,
-        INTROSCREEN,
-        GAMEOVER,
-        ABOUTSCREEN,
-        PAUSESCREEN,
-        ONELASTCHANCE
+        IN_GAME,
+        INTRO_SCREEN,
+        GAME_OVER,
+        ABOUT_SCREEN,
+        PAUSE_SCREEN,
+        ONE_LAST_CHANCE
     }
 
-    private GameState currentState = GameState.INTROSCREEN;
+    private GameState currentState = GameState.INTRO_SCREEN;
 
     private final short[] levelData = new short[225];
 
@@ -85,7 +85,7 @@ public class Model extends JPanel implements ActionListener {
         LOSE,
         NOT_YET
     }
-    private ResultSuit verdictDeatch = ResultSuit.NOT_YET;
+    private ResultSuit verdictDeath = ResultSuit.NOT_YET;
     private MouseHandler handler = new MouseHandler();
     private boolean continuePlaySuit = false;
 
@@ -177,8 +177,8 @@ public class Model extends JPanel implements ActionListener {
         URL urlMenu2 = loadImage("menu2.png");
         URL urlRock1 = loadImage("Rock1.png");
         URL urlRock2 = loadImage("Rock2.png");
-        URL urlPapper1 = loadImage ("Papper1.png");
-        URL urlPapper2 = loadImage ("Papper2.png");
+        URL urlPaper1 = loadImage ("Paper1.png");
+        URL urlPaper2 = loadImage ("Paper2.png");
         URL urlScissor1 = loadImage ("Scissor1.png");
         URL urlScissor2 = loadImage ("Scissor2.png");
         //get images
@@ -188,7 +188,7 @@ public class Model extends JPanel implements ActionListener {
         restartButton = new Image[2];
         continueButton = new Image[2];
         menuButton = new Image[2];
-        papperButton = new Image[2];
+        paperButton = new Image[2];
         rockButton = new Image[2];
         scissorButton = new Image[2];
         heart = new ImageIcon(urlHeart).getImage();
@@ -205,8 +205,8 @@ public class Model extends JPanel implements ActionListener {
         restartButton[1] = new ImageIcon(urlRestart2).getImage();
         menuButton[0] = new ImageIcon(urlMenu1).getImage();
         menuButton[1] = new ImageIcon(urlMenu2).getImage();
-        papperButton[0] = new ImageIcon(urlPapper1).getImage();
-        papperButton[1] = new ImageIcon(urlPapper2).getImage();
+        paperButton[0] = new ImageIcon(urlPaper1).getImage();
+        paperButton[1] = new ImageIcon(urlPaper2).getImage();
         rockButton[0] = new ImageIcon(urlRock1).getImage();
         rockButton[1] = new ImageIcon(urlRock2).getImage();
         scissorButton[0] = new ImageIcon(urlScissor1).getImage();
@@ -243,7 +243,7 @@ public class Model extends JPanel implements ActionListener {
         Image exiImage = exitButton[0];
         pickedAnswer = false;
         g2d.setColor(Color.yellow);
-        boolean strtbutt = false, aboutbutt = false, exitbutt = false;
+        boolean startButt = false, aboutButt = false, exitButt = false;
         g2d.drawImage(titleImage,SCREEN_SIZE/2 - 266, SCREEN_SIZE/4, 532,96,this);
         ImageButton buttonStart = new ImageButton(SCREEN_SIZE/2 - 130, SCREEN_SIZE/2, 574 ,96,
                 loadImage("Start1.png"), 0);
@@ -291,23 +291,23 @@ public class Model extends JPanel implements ActionListener {
 
         if(handler.isClicking){
             if(buttonStart.isClicked(handler.cor_x, handler.cor_y)){
-                strtbutt = true;
+                startButt = true;
             }
             else if(buttonAbort.isClicked(handler.cor_x, handler.cor_y)){
-                aboutbutt = true;
+                aboutButt = true;
             }
             else if(buttonExit.isClicked(handler.cor_x, handler.cor_y)){
-                exitbutt = true;
+                exitButt = true;
             }
         }
-        if(strtbutt){
-            currentState = GameState.INGAME;
+        if(startButt){
+            currentState = GameState.IN_GAME;
             initGame();
         }
-        else if(aboutbutt){
-            currentState = GameState.ABOUTSCREEN;
+        else if(aboutButt){
+            currentState = GameState.ABOUT_SCREEN;
         }
-        else if(exitbutt){
+        else if(exitButt){
             System.exit(0);
         }
         g2d.drawImage(staImage,SCREEN_SIZE/2 - 130, SCREEN_SIZE/2, 574 ,96,this);
@@ -319,7 +319,7 @@ public class Model extends JPanel implements ActionListener {
         Image conImage,resImage,menImage;
         g2d.setColor(Color.yellow);
         String pauseString = "Paused";
-        g2d.setFont(gamerFont);
+        g2d.setFont(GAMER_FONT);
         g2d.drawString(pauseString, (SCREEN_SIZE)/2 - 100, 300);
         ImageButton buttonCon = new ImageButton(SCREEN_SIZE/2 - 130, SCREEN_SIZE/2, 574 ,96,
                 loadImage("Start1.png"), 0);
@@ -364,15 +364,15 @@ public class Model extends JPanel implements ActionListener {
         }
         if(handler.isClicking && !pickedAnswer){
             if(buttonCon.isClicked(handler.cor_x, handler.cor_y)){
-                currentState = GameState.INGAME;
+                currentState = GameState.IN_GAME;
                 handler.isClicking = false;
             }
             else if(buttonRes.isClicked(handler.cor_x, handler.cor_y)){
-                currentState = GameState.INGAME;
+                currentState = GameState.IN_GAME;
                 initGame();
                 handler.isClicking = false;
             }else if(buttonMen.isClicked(handler.cor_x, handler.cor_y)){
-                currentState = GameState.INTROSCREEN;
+                currentState = GameState.INTRO_SCREEN;
                 handler.isClicking = false;
             }
         }
@@ -403,12 +403,12 @@ public class Model extends JPanel implements ActionListener {
         String scoreString = "Your Score " + score;
         String newHighScore = "Congrats new highscore!";
         g2d.setColor(Color.yellow);
-        g2d.setFont(gamerFont);
+        g2d.setFont(GAMER_FONT);
         g2d.drawString(gameOverString, (SCREEN_SIZE)/5, 300);
         g2d.drawString(scoreString, (SCREEN_SIZE)/5, 400);
         if(newHighScoreb){
             g2d.setColor(Color.yellow);
-            g2d.setFont(gamerFontSmall);
+            g2d.setFont(GAMER_FONT_SMALL);
             g2d.drawString(newHighScore,(SCREEN_SIZE)/5-100,500);
             highScoreSound.playSoundOnce();
         }
@@ -422,8 +422,8 @@ public class Model extends JPanel implements ActionListener {
         String info4 = "Choose Rock | Paper | Scissor?";
 
         g2d.setColor(Color.yellow);
-        g2d.setFont(smollFont);
-        int chosenvalue = 0;
+        g2d.setFont(TINY_FONT);
+        int chosenValue = 0;
         g2d.drawString(info1, (SCREEN_SIZE)/4, 100);
         g2d.drawString(info2, (SCREEN_SIZE)/4, 150);
         g2d.drawString(info3, (SCREEN_SIZE)/4, 200);
@@ -432,21 +432,21 @@ public class Model extends JPanel implements ActionListener {
         ImageButton buttonRock = new ImageButton(SCREEN_SIZE/3 - 210, 2*SCREEN_SIZE/3-80, 200, 200,
                 loadImage("Rock1.png"), 0);
         ImageButton buttonPaper = new ImageButton(SCREEN_SIZE/3 + 12, 2*SCREEN_SIZE/3-80, 200, 200,
-                loadImage("Papper1.png"), 1);
+                loadImage("Paper1.png"), 1);
         ImageButton buttonScissor = new ImageButton(2*SCREEN_SIZE/3 + 12, 2*SCREEN_SIZE/3-80, 200, 200,
                 loadImage("Scissor1.png"), 2);
         Image rocImage,papImage,sciImage;
         g2d.setColor(Color.yellow);
-        g2d.setFont(smollFont);
+        g2d.setFont(TINY_FONT);
         rocImage = rockButton[0];
-        papImage = papperButton[0];
+        papImage = paperButton[0];
         sciImage = scissorButton[0];
         if(handler.cor_y>= 398&& handler.cor_y <=600) {
             if (handler.cor_x >= 30 && handler.cor_x <= 229) {
                 rocImage = rockButton[1];
             }
             else if(handler.cor_x >= 251 && handler.cor_x <= 451){
-                papImage = papperButton[1];
+                papImage = paperButton[1];
             }
             else if(handler.cor_x >= 472 && handler.cor_x <= 692){
                 sciImage = scissorButton[1];
@@ -459,43 +459,43 @@ public class Model extends JPanel implements ActionListener {
 //        kalau diklik dan belum ambil jawaban
         if(handler.isClicking && !pickedAnswer){
             if(buttonRock.isClicked(handler.cor_x, handler.cor_y)){
-                chosenvalue = buttonRock.getReturnValue();
-                System.out.println(chosenvalue);
+                chosenValue = buttonRock.getReturnValue();
+                System.out.println(chosenValue);
                 pickedAnswer = true;
             }
             else if(buttonPaper.isClicked(handler.cor_x, handler.cor_y)){
-                chosenvalue = buttonRock.getReturnValue();
-                System.out.println(chosenvalue);
+                chosenValue = buttonRock.getReturnValue();
+                System.out.println(chosenValue);
                 pickedAnswer = true;
             }else if(buttonScissor.isClicked(handler.cor_x, handler.cor_y)){
-                chosenvalue = buttonRock.getReturnValue();
-                System.out.println(chosenvalue);
+                chosenValue = buttonRock.getReturnValue();
+                System.out.println(chosenValue);
                 pickedAnswer = true;
             }
         }
         //kalau udah ambi jawaban tapi belum simulasi hasil
-        if(pickedAnswer && (verdictDeatch == ResultSuit.NOT_YET)){
+        if(pickedAnswer && (verdictDeath == ResultSuit.NOT_YET)){
             int res = numGenerator.nextInt(3);
             System.out.println(res);
-            if(chosenvalue - res == 1){
+            if(chosenValue - res == 1){
                 //WIN CERITANYA
-                verdictDeatch = ResultSuit.WIN;
+                verdictDeath = ResultSuit.WIN;
                 player.increaseLives();
-            }else if(res - chosenvalue == 2){
-                verdictDeatch = ResultSuit.WIN;
+            }else if(res - chosenValue == 2){
+                verdictDeath = ResultSuit.WIN;
                 player.increaseLives();
-            } else if(res == chosenvalue){
+            } else if(res == chosenValue){
                 //DRAW CERITANYA
-                verdictDeatch = ResultSuit.DRAW;
+                verdictDeath = ResultSuit.DRAW;
             }else{
                 //YAH KALAH
-                verdictDeatch = ResultSuit.LOSE;
+                verdictDeath = ResultSuit.LOSE;
                 dying = true;
             }
         }
         //kalau udah ada result dan di klik lagi, baru lanjut main
-        if(verdictDeatch != ResultSuit.NOT_YET){
-            switch (verdictDeatch){
+        if(verdictDeath != ResultSuit.NOT_YET){
+            switch (verdictDeath){
                 case WIN:
                     String win = "YOU WIN, YOU MAY LIVE ONCE AGAIN";
                     g2d.drawString(win, (SCREEN_SIZE)/4, 300);
@@ -514,17 +514,17 @@ public class Model extends JPanel implements ActionListener {
             if(continuePlaySuit){
                 pickedAnswer = false;
                 continuePlaySuit = false;
-                if(verdictDeatch!= ResultSuit.DRAW){
-                    currentState = GameState.INGAME;
+                if(verdictDeath != ResultSuit.DRAW){
+                    currentState = GameState.IN_GAME;
                 }
-                verdictDeatch = ResultSuit.NOT_YET;
+                verdictDeath = ResultSuit.NOT_YET;
 
             }
         }
     }
 
     private void drawScore(Graphics2D g) {
-        g.setFont(smallFont);
+        g.setFont(SMALL_FONT);
         g.setColor(new Color(5, 181, 79));
         String s = "Score: " + score;
         g.drawString(s, SCREEN_SIZE / 2 + 192, SCREEN_SIZE + 32);
@@ -538,7 +538,7 @@ public class Model extends JPanel implements ActionListener {
     }
 
     private void drawHighScore(Graphics2D g) {
-        g.setFont(smallFont);
+        g.setFont(SMALL_FONT);
         g.setColor(new Color(5, 181, 79));
         String s = "High Score: " + highScore;
         g.drawString(s, SCREEN_SIZE / 2 - 120, SCREEN_SIZE + 32);
@@ -563,8 +563,8 @@ public class Model extends JPanel implements ActionListener {
             player.increaseLives();
             SoundPlayer.playSound("levelup.wav");
             lives = player.getLives();
-            if (N_GHOSTS < MAX_GHOSTS) {
-                N_GHOSTS++;
+            if (nGhosts < MAX_GHOSTS) {
+                nGhosts++;
             }
 
             int maxSpeed = 5;
@@ -582,11 +582,11 @@ public class Model extends JPanel implements ActionListener {
         lives = player.getLives();
         if (player.getLives() <= 0) {
             if(player.getLives() == 0){
-                currentState= GameState.ONELASTCHANCE;
+                currentState= GameState.ONE_LAST_CHANCE;
             }
             else{
                 SoundPlayer.playSound("death.wav");
-                currentState = GameState.GAMEOVER;
+                currentState = GameState.GAME_OVER;
             }
         }
         else{
@@ -598,7 +598,7 @@ public class Model extends JPanel implements ActionListener {
 
     private void detectDeath(int id) {
     	//detect if pacman close to ghost with index id
-        if (ghosts[id].detectPlayerCollision(player) && currentState == GameState.INGAME) {
+        if (ghosts[id].detectPlayerCollision(player) && currentState == GameState.IN_GAME) {
             if(!player.canEatGhosts)
                 dying = true;
             else
@@ -650,7 +650,7 @@ public class Model extends JPanel implements ActionListener {
 
         int pos;
 
-        for (int i = 0; i < N_GHOSTS; i++) {
+        for (int i = 0; i < nGhosts; i++) {
             if(!ghosts[i].isDead) {
                 if (player.isFacing != Entity.Direction.NEUTRAL) {
                     if (ghosts[i].x % BLOCK_SIZE == 0 && ghosts[i].y % BLOCK_SIZE == 0) {
@@ -806,10 +806,10 @@ public class Model extends JPanel implements ActionListener {
         initLevel();
         currentSpeed = 3;
         lvlCounter = 1;
-        N_GHOSTS = 1;
+        nGhosts = 1;
         scoreWeight = 1;
         scoreBefore = 0;
-        verdictDeatch = ResultSuit.NOT_YET;
+        verdictDeath = ResultSuit.NOT_YET;
         pickedAnswer = false;
         continuePlaySuit = false;
         powerList.clear();
@@ -868,7 +868,7 @@ public class Model extends JPanel implements ActionListener {
             ghostOneDimensionPos = startGhost_x + startGhost_y*N_BLOCKS;
 
         }
-        for (int i = 0; i < N_GHOSTS; i++) {
+        for (int i = 0; i < nGhosts; i++) {
             random = (int) (Math.random() * (currentSpeed + 1));
 
             if (random > currentSpeed) {
@@ -891,7 +891,7 @@ public class Model extends JPanel implements ActionListener {
         dying = false;
         pickedAnswer = false;
         scoreWeight = 1;
-        verdictDeatch = ResultSuit.NOT_YET;
+        verdictDeath = ResultSuit.NOT_YET;
         continuePlaySuit = false;
     }
 
@@ -908,22 +908,22 @@ public class Model extends JPanel implements ActionListener {
         drawScore(g2d);
         drawHighScore(g2d);
         switch (currentState){
-            case INGAME:
+            case IN_GAME:
                 playGame(g2d);
                 break;
-            case ABOUTSCREEN:
+            case ABOUT_SCREEN:
                 showAboutScreen(g2d);
                 break;
-            case INTROSCREEN:
+            case INTRO_SCREEN:
                 showIntroScreen(g2d);
                 break;
-            case PAUSESCREEN:
+            case PAUSE_SCREEN:
                 showPauseScreen(g2d);
                 break;
-            case GAMEOVER:
+            case GAME_OVER:
                 showGameOverScreen(g2d);
                 break;
-            case ONELASTCHANCE:
+            case ONE_LAST_CHANCE:
                 playOneLastChance(g2d);
         }
 
@@ -941,39 +941,39 @@ public class Model extends JPanel implements ActionListener {
             int key = e.getKeyCode();
 
             switch (currentState){
-                case INGAME:
+                case IN_GAME:
                     if (!player.getInput(key)) { //if player doesn't get a movement input
                         if (key == KeyEvent.VK_ESCAPE && timer.isRunning()) {
-                            currentState = GameState.INTROSCREEN;
+                            currentState = GameState.INTRO_SCREEN;
                         }
                     }
                     if(key == KeyEvent.VK_ESCAPE){
                         SoundPlayer.playSound("esc.wav");
-                        currentState = GameState.PAUSESCREEN;
+                        currentState = GameState.PAUSE_SCREEN;
                     }
                     break;
-                case ABOUTSCREEN:
+                case ABOUT_SCREEN:
                     if(key == KeyEvent.VK_ENTER) {
                         selectedButtonIntro = 0;
-                        currentState = GameState.INTROSCREEN;
+                        currentState = GameState.INTRO_SCREEN;
                         repaint();
                     }
                     if(key == KeyEvent.VK_ESCAPE){
                         SoundPlayer.playSound("esc.wav");
                         selectedButtonIntro = 0;
-                        currentState = GameState.INTROSCREEN;
+                        currentState = GameState.INTRO_SCREEN;
                     }
                     break;
-                case INTROSCREEN:
+                case INTRO_SCREEN:
                     if (key == KeyEvent.VK_ENTER) {
                         SoundPlayer.playSound("enter.wav");
                         if(selectedButtonIntro % 3 == 0) {
-                            currentState = GameState.INGAME;
+                            currentState = GameState.IN_GAME;
                             SoundPlayer.playSound("bruh.wav");
                             initGame();
                         }
                         if(selectedButtonIntro % 3 == 1){
-                            currentState = GameState.ABOUTSCREEN;
+                            currentState = GameState.ABOUT_SCREEN;
                         }
                         if(selectedButtonIntro % 3 == 2){
                             System.exit(0);
@@ -998,23 +998,23 @@ public class Model extends JPanel implements ActionListener {
                         }
                     }
                     break;
-                case PAUSESCREEN:
+                case PAUSE_SCREEN:
                     if (key == KeyEvent.VK_ENTER) {
                         SoundPlayer.playSound("enter.wav");
                         if(selectedButtonPause % 3 == 0) {
-                            currentState = GameState.INGAME;
+                            currentState = GameState.IN_GAME;
                         }
                         if(selectedButtonPause % 3 == 1){
-                            currentState = GameState.INGAME;
+                            currentState = GameState.IN_GAME;
                             initGame();
                         }
                         if(selectedButtonPause % 3 == 2){
-                            currentState = GameState.INTROSCREEN;
+                            currentState = GameState.INTRO_SCREEN;
                         }
                     }
                     if (key == KeyEvent.VK_ESCAPE){
                         SoundPlayer.playSound("esc.wav");
-                        currentState = GameState.INGAME;
+                        currentState = GameState.IN_GAME;
                     }
                     if (key == KeyEvent.VK_UP) {
                         SoundPlayer.playSound("topdown.wav");
@@ -1031,20 +1031,20 @@ public class Model extends JPanel implements ActionListener {
                         }
                     }
                     break;
-                case ONELASTCHANCE:
+                case ONE_LAST_CHANCE:
                     if(key == KeyEvent.VK_ENTER){
                         continuePlaySuit = true;
                     }
                     break;
-                case GAMEOVER:
+                case GAME_OVER:
                     if (key == KeyEvent.VK_ENTER) {
                         SoundPlayer.playSound("enter.wav");
-                        currentState = GameState.INTROSCREEN;
+                        currentState = GameState.INTRO_SCREEN;
                         initGame();
                     }
                     else if(key == KeyEvent.VK_SPACE){
                         SoundPlayer.playSound("esc.wav");
-                        currentState = GameState.INTROSCREEN;
+                        currentState = GameState.INTRO_SCREEN;
                         initGame();
                     }
                     break;
