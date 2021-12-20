@@ -524,9 +524,9 @@ public class Model extends JPanel implements ActionListener {
         }
     }
 
-    private void drawScore(Graphics2D g) {
-        g.setFont(SMALL_FONT);
-        g.setColor(new Color(5, 181, 79));
+    private void drawScore() {
+        g2d.setFont(SMALL_FONT);
+        g2d.setColor(new Color(5, 181, 79));
         String s = "Score: " + score;
         g2d.drawString(s, SCREEN_SIZE / 2 + 192, SCREEN_SIZE + 32);
         g2d.drawImage(heart,40,SCREEN_SIZE+2,this);
@@ -538,9 +538,9 @@ public class Model extends JPanel implements ActionListener {
         g2d.drawString(strLvl, SCREEN_SIZE/2 - 240, SCREEN_SIZE+32);
     }
 
-    private void drawHighScore(Graphics2D g) {
-        g.setFont(SMALL_FONT);
-        g.setColor(new Color(5, 181, 79));
+    private void drawHighScore() {
+        g2d.setFont(SMALL_FONT);
+        g2d.setColor(new Color(5, 181, 79));
         String s = "High Score: " + highScore;
         g2d.drawString(s, SCREEN_SIZE / 2 - 120, SCREEN_SIZE + 32);
     }
@@ -910,22 +910,22 @@ public class Model extends JPanel implements ActionListener {
         drawHighScore();
         switch (currentState){
             case IN_GAME:
-                playGame(g2d);
+                playGame();
                 break;
             case ABOUT_SCREEN:
-                showAboutScreen(g2d);
+                showAboutScreen();
                 break;
             case INTRO_SCREEN:
-                showIntroScreen(g2d);
+                showIntroScreen();
                 break;
             case PAUSE_SCREEN:
-                showPauseScreen(g2d);
+                showPauseScreen();
                 break;
             case GAME_OVER:
-                showGameOverScreen(g2d);
+                showGameOverScreen();
                 break;
             case ONE_LAST_CHANCE:
-                playOneLastChance(g2d);
+                playOneLastChance();
         }
 
         Toolkit.getDefaultToolkit().sync();
